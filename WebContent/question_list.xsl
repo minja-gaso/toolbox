@@ -25,7 +25,7 @@
 			<!-- survey content -->
 			<div class="row">
 			<div class="col-lg-8">
-				<h2>Questions</h2>
+				<h2>List of Questions</h2>
 				<!-- 
 				<a class="btn btn-default pull-right" href="javascript:createQuestion();"><span class="fa fa-plus-circle" /> Add Question</a>
 				-->
@@ -78,7 +78,7 @@
 								</tr>
 							</xsl:if>
 							<tr class="question-row">
-								<th class="text-center"><a href="javascript:insertQuestion({id});"><span class="fa fa-plus-circle fa-lg" /></a></th>
+								<th class="text-center"><a href="javascript:insertQuestion('{id}');"><span class="fa fa-plus-circle fa-lg" /></a></th>
 								<td class="text-center">
 									<xsl:choose>
 										<xsl:when test="page != following-sibling::*[1]/page or position() = last()">
@@ -108,8 +108,8 @@
 									<input type="hidden" name="QUESTION_ORDER_LIST" value="{number}" />
 									<xsl:text><xsl:value-of select="label" /></xsl:text>
 								</td>
-								<td class="text-center"><a href="javascript:editQuestion({id}, {concat($quote, $questionType, $quote)});"><span class="fa fa-pencil fa-lg" /></a></td>
-								<td class="text-center"><a href="javascript:deleteQuestion({id});"><span class="fa fa-trash fa-lg" /></a></td>
+								<td class="text-center"><a href="javascript:editQuestion('{id}', {concat($quote, $questionType, $quote)});"><span class="fa fa-pencil fa-lg" /></a></td>
+								<td class="text-center"><a href="javascript:deleteQuestion('{id}');"><span class="fa fa-trash fa-lg" /></a></td>
 								<td class="text-center">
 									<!-- move up -->									
 									<xsl:choose>
@@ -146,6 +146,7 @@
 				<ul class="nav nav-pills nav-stacked">
 					<li role="presentation"><a href="javascript:switchTab('GENERAL');">General</a></li>
 					<li role="presentation" class="active"><a href="#">Questions</a></li>
+					<li role="presentation"><a href="javascript:switchTab('REPORTS');">Reports</a></li>
 				</ul>
 			</div>
 			</div>

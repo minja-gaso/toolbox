@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.sw.marketing.dao.DAOFactory;
 import org.sw.marketing.dao.form.FormDAO;
+import org.sw.marketing.dao.user.UserDAO;
 import org.sw.marketing.data.form.Data;
 import org.sw.marketing.data.form.Data.Form;
 import org.sw.marketing.data.form.Data.User;
@@ -29,6 +30,7 @@ public class SurveyListServlet extends HttpServlet
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		FormDAO formDAO = DAOFactory.getFormDAO();
+		UserDAO userDAO = DAOFactory.getUserDAO();
 		
 		Data data = new Data();		
 		java.util.List<Form> formList = formDAO.getForms();
@@ -41,6 +43,7 @@ public class SurveyListServlet extends HttpServlet
 		if(httpSession.getAttribute("user") != null)
 		{
 			User user = (User) httpSession.getAttribute("user");
+			user = userDAO.getUserByEmail(user.getEmailAddress());
 			data.setUser(user);
 		}
 		

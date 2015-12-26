@@ -10,6 +10,7 @@
 			<xsl:variable name="webformUrl" select="concat($webformBaseUrl, /data/form/prettyUrl)" />
 			<div class="row">
 				<div class="col-lg-8">
+					<h2>General Information</h2>
 					<div class="form-group">
 						<label for="FORM_TITLE">Title</label>
 						<input type="text" class="form-control" name="FORM_TITLE" id="FORM_TITLE" value="{/data/form/title}" />
@@ -34,7 +35,7 @@
 						<input type="text" class="form-control" name="FORM_SKIN_SELECTOR" id="FORM_SKIN_SELECTOR" value="{/data/form/skinSelector}" />
 					</div>
 					<div class="btn-toolbar">
-						<a class="btn btn-primary" href="javascript:saveForm();">Save</a>
+						<a class="btn btn-primary" href="javascript:document.portal_form.ACTION.value='SAVE_FORM';document.portal_form.submit();">Save</a>
 						<a class="btn btn-danger" href="javascript:formListScreen();">Cancel</a>
 					</div>
 				</div>
@@ -43,6 +44,7 @@
 					<ul class="nav nav-pills nav-stacked">
 						<li role="presentation" class="active"><a href="#">General</a></li>
 						<li role="presentation"><a href="javascript:switchTab('QUESTION_LIST');">Questions</a></li>
+						<li role="presentation"><a href="javascript:switchTab('REPORTS');">Reports</a></li>
 					</ul>
 				</div>
 			</div>

@@ -13,6 +13,7 @@ public class QuestionParameters
 
 		if(parameterMap.get("QUESTION_TYPE") != null)
 		{
+			System.out.println("TYPE:::" + parameterMap.get("QUESTION_TYPE")[0]);
 			question.setType(parameterMap.get("QUESTION_TYPE")[0]);
 		}
 		if(parameterMap.get("QUESTION_LABEL") != null)

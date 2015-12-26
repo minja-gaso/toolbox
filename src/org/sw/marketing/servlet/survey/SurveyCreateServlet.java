@@ -6,11 +6,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.sw.marketing.dao.DAOFactory;
 import org.sw.marketing.dao.form.FormDAO;
+import org.sw.marketing.dao.user.UserDAO;
 import org.sw.marketing.data.form.Data;
 import org.sw.marketing.data.form.Data.Form;
+import org.sw.marketing.data.form.Data.User;
 import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 
@@ -25,12 +28,22 @@ public class SurveyCreateServlet extends HttpServlet
 		java.util.Map<String, String[]> parameterMap = (java.util.HashMap<String, String[]>) request.getAttribute("parameterMap");
 
 		FormDAO formDAO = DAOFactory.getFormDAO();
+		UserDAO userDAO = DAOFactory.getUserDAO();
+		HttpSession httpSession = (HttpSession) request.getSession();
+
+		Data data = new Data();
+		if(httpSession.getAttribute("user") != null)
+		{
+			User user = (User) httpSession.getAttribute("user");
+			user = userDAO.getUserByEmail(user.getEmailAddress());
+			data.setUser(user);
+		}
 		//
 		String paramScreen = parameterMap.get("SCREEN")[0].trim();
 		String paramAction = parameterMap.get("ACTION")[0].trim();
 		if (paramAction.equals("CREATE_FORM"))
 		{
-			int id = formDAO.createForm();
+			long id = formDAO.createForm(data.getUser());
 			if (id > 0)
 			{
 				request.setAttribute("surveyId", id);
@@ -38,7 +51,6 @@ public class SurveyCreateServlet extends HttpServlet
 			}
 		}
 
-		Data data = new Data();
 		String xmlStr = TransformerHelper.getXmlStr("org.sw.marketing.data.form", data);
 		String htmlStr = TransformerHelper.getHtmlStr(xmlStr, getServletContext().getResourceAsStream("/create.xsl"));
 

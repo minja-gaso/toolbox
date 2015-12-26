@@ -45,7 +45,7 @@ public class LinkedInCallback extends HttpServlet
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode jsonNode = objectMapper.readTree(responseBody);
 		
-		System.out.println(responseBody);
+//		System.out.println(responseBody);
 
 		String id = null, firstName = null, lastName = null, emailAddress = null, pictureUrl = null;
 		if(jsonNode.get("id") != null)

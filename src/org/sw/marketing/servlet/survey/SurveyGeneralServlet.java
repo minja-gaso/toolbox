@@ -35,15 +35,15 @@ public class SurveyGeneralServlet extends HttpServlet
 		Form form = null;
 
 		String paramFormId = null;
-		int id = 0;
+		long id = 0;
 		if (request.getAttribute("surveyId") != null)
 		{
-			id = (int) request.getAttribute("surveyId");
+			id = (long) request.getAttribute("surveyId");
 		}
 		else if (parameterMap.get("FORM_ID") != null)
 		{
 			paramFormId = parameterMap.get("FORM_ID")[0];
-			id = Integer.parseInt(paramFormId);
+			id = Long.parseLong(paramFormId);
 		}
 		form = formDAO.getForm(id);
 

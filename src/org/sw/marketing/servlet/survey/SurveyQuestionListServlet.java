@@ -42,7 +42,7 @@ public class SurveyQuestionListServlet extends HttpServlet {
 		{
 			paramFormId = (String) request.getAttribute("surveyId");
 		}
-		int id = Integer.parseInt(paramFormId);
+		long id = Long.parseLong(paramFormId);
 		
 		if(parameterMap.get("ACTION") != null && !parameterMap.get("ACTION").equals(""))
 		{			
