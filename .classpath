@@ -16,13 +16,13 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-cli-1.2.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-codec-1.3.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/linkedin-j.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/signpost-core-1.2.1.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/guava-18.0.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jackson-annotations-2.6.0.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jackson-core-2.6.4.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jackson-databind-2.6.4.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jackson-annotations-2.6.0.jar"/>
-	<classpathentry kind="lib" path="E:/apache-tomcat-8.0.28/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="E:/workspace/webform/WebContent/WEB-INF/lib/guava-18.0.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/guava-18.0.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/linkedin-j.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/signpost-core-1.2.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Development/apache-tomcat-8.0.30/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/scribe-1.3.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
