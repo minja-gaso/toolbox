@@ -13,7 +13,8 @@
 					<h2>Generate Reports</h2>
 					<div class="form-group">
 						<label for="PDF_GENERATE">Generate PDF</label>
-						<p><a class="btn btn-default" href="pdf/survey/{/data/form/id}" target="_blank">Create</a></p>
+						<p><a class="btn btn-default" href="pdf/survey/{/data/form/id}" target="_blank">View PDF</a></p>
+						<p><a class="btn btn-default" href="html/survey/{/data/form/id}" target="_blank">View HTML</a></p>
 					</div>
 					<div class="btn-toolbar">
 						<a class="btn btn-primary" href="javascript:document.portal_form.ACTION.value='SAVE_FORM';document.portal_form.submit();">Save</a>
