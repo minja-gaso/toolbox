@@ -26,7 +26,7 @@
 						<tr>
 							<th class="text-center"><input type="checkbox" name="FORM_ID_LIST" value="{id}" /></th>
 							<td><xsl:value-of select="title" /></td>
-							<td class="text-center"><a href="/webform/public/{id}" target="_blank"><span class="fa fa-search" /></a></td>
+							<td class="text-center"><a href="#"><span class="fa fa-search" /></a></td>
 							<td class="text-center"><a href="javascript:editForm('{id}');"><span class="fa fa-edit" /></a></td>
 							<td class="text-center"><a href="javascript:deleteForm('{id}');"><span class="fa fa-trash" /></a></td>
 						</tr>
