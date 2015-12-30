@@ -6,7 +6,7 @@
 			<input type="hidden" name="SCREEN" value="GENERAL" />
 			<input type="hidden" name="FORM_ID" value="{/data/form/id}" />
 			<!-- survey content -->
-			<xsl:variable name="webformBaseUrl" select="concat(/data/environment/serverName, 'webforms/public/')" />
+			<xsl:variable name="webformBaseUrl" select="concat(/data/environment/serverName, '/webform/public/')" />
 			<xsl:variable name="webformUrl" select="concat($webformBaseUrl, /data/form/prettyUrl)" />
 			<div class="row">
 				<div class="col-lg-8">
@@ -16,8 +16,17 @@
 						<input type="text" class="form-control" name="FORM_TITLE" id="FORM_TITLE" value="{/data/form/title}" />
 					</div>			
 					<div class="form-group">
+						<label for="FORM_URL">Standard URL</label>
+						<p class="help-block">If you do not care about SEO, feel free to link to this URL.</p>
+						<div class="input-group">
+							<span class="input-group-addon"><xsl:value-of select="$webformBaseUrl" /></span>
+							<input type="text" class="form-control" name="FORM_URL" id="FORM_URL" value="{/data/form/id}" />
+							<a href="{concat($webformBaseUrl, /data/form/id)}" class="input-group-addon" target="_blank"><span class="fa fa-external-link" /></a>
+						</div>
+					</div>			
+					<div class="form-group">
 						<label for="FORM_PRETTY_URL">Pretty URL</label>
-						<p class="help-block">Create a <em>Pretty URL</em> you can use instead of the generic ID-based option.</p>
+						<p class="help-block">Create a <em>Pretty URL</em> you can use instead of the generic ID-based option.  This will be better for SEO.</p>
 						<div class="input-group">
 							<span class="input-group-addon"><xsl:value-of select="$webformBaseUrl" /></span>
 							<input type="text" class="form-control" name="FORM_PRETTY_URL" id="FORM_PRETTY_URL" value="{/data/form/prettyUrl}" />

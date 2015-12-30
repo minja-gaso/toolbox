@@ -18,6 +18,7 @@ import org.sw.marketing.dao.submission.SubmissionAnswerDAO;
 import org.sw.marketing.dao.submission.SubmissionDAO;
 import org.sw.marketing.dao.user.UserDAO;
 import org.sw.marketing.data.form.Data;
+import org.sw.marketing.data.form.Data.Environment;
 import org.sw.marketing.data.form.Data.Form;
 import org.sw.marketing.data.form.Data.Form.Question;
 import org.sw.marketing.data.form.Data.Form.Question.PossibleAnswer;
@@ -54,6 +55,7 @@ public class SurveyController extends HttpServlet
 		innerScreenList.add("QUESTION_TYPE_RADIO");
 		innerScreenList.add("QUESTION_TYPE_CHECKBOX");
 		innerScreenList.add("REPORTS");
+		innerScreenList.add("ANALYTICS");
 	}
 
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -156,6 +158,7 @@ public class SurveyController extends HttpServlet
 			if(paramAction.equals("CREATE_FORM"))
 			{
 				formID = formDAO.createForm(user);
+				form = formDAO.getForm(formID);
 			}
 			else if(paramAction.equals("DELETE_FORM"))
 			{
@@ -355,6 +358,10 @@ public class SurveyController extends HttpServlet
 			{
 				xslScreen = "/reports.xsl";
 			}
+			else if(paramScreen.equals("ANALYTICS"))
+			{
+				xslScreen = "/analytics.xsl";
+			}
 			else
 			{
 				xslScreen = "/general.xsl";
@@ -374,6 +381,10 @@ public class SurveyController extends HttpServlet
 				data.getForm().addAll(formList);
 			}
 		}
+
+		Environment environment = new Environment();
+		environment.setServerName(getBaseUrl(request));
+		data.setEnvironment(environment);
 		
 		String xmlStr = TransformerHelper.getXmlStr("org.sw.marketing.data.form", data);
 		String htmlStr = TransformerHelper.getHtmlStr(xmlStr, getServletContext().getResourceAsStream(xslScreen));
@@ -395,5 +406,21 @@ public class SurveyController extends HttpServlet
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		process(request, response);
+	}
+	
+	/**
+	 * NOT UNIT TESTED Returns the base url (e.g, <tt>http://myhost:8080/myapp</tt>) suitable for
+	 * using in a base tag or building reliable urls.
+	 */
+	public static String getBaseUrl(HttpServletRequest request) {
+		if ((request.getServerPort() == 80) || (request.getServerPort() == 443))
+		{
+			return request.getScheme() + "://" + request.getServerName();	
+		}
+		else
+		{
+
+			return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+		}
 	}
 }

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="C:/Development/workspace/webservices.jar"/>
-	<classpathentry kind="lib" path="C:/Development/apache-tomcat-8.0.30/lib/servlet-api.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webservices"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_66">
@@ -24,5 +22,7 @@
 	<classpathentry kind="lib" path="/webservices/xmlgraphics-commons-2.0.1.jar"/>
 	<classpathentry kind="lib" path="/webservices/jackson-databind-2.6.4.jar"/>
 	<classpathentry kind="lib" path="/webservices/jackson-core-2.6.4.jar"/>
+	<classpathentry kind="lib" path="E:/apache-tomcat-8.0.28/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="E:/webservices.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

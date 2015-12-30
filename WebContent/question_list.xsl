@@ -147,6 +147,7 @@
 					<li role="presentation"><a href="javascript:switchTab('GENERAL');">General</a></li>
 					<li role="presentation" class="active"><a href="#">Questions</a></li>
 					<li role="presentation"><a href="javascript:switchTab('REPORTS');">Reports</a></li>
+						<li role="presentation"><a href="javascript:switchTab('ANALYTICS');">Analytics</a></li>
 				</ul>
 			</div>
 			</div>
