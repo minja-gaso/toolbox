@@ -1,4 +1,4 @@
-package org.sw.marketing.servlet;
+package org.sw.marketing.servlet.report.summary;
 
 import java.io.IOException;
 import javax.servlet.ServletException;

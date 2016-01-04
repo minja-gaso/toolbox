@@ -18,7 +18,7 @@ public class SurveyParameters
 		if(parameterMap.get("FORM_PRETTY_URL") != null)
 		{
 			String prettyUrl = parameterMap.get("FORM_PRETTY_URL")[0];
-			prettyUrl = prettyUrl.replaceAll("[^A-Za-z0-9\\s]", "").replaceAll("\\s", "-");
+			prettyUrl = prettyUrl.replaceAll("[^A-Za-z0-9\\-\\.\\_\\~\\s]", "").replaceAll("\\s", "-");
 			prettyUrl = prettyUrl.toLowerCase();
 			form.setPrettyUrl(prettyUrl);
 		}

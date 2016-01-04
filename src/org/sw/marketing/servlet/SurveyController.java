@@ -54,6 +54,7 @@ public class SurveyController extends HttpServlet
 		innerScreenList.add("QUESTION_TYPE_TEXTAREA");
 		innerScreenList.add("QUESTION_TYPE_RADIO");
 		innerScreenList.add("QUESTION_TYPE_CHECKBOX");
+		innerScreenList.add("QUESTION_TYPE_PULLDOWN");
 		innerScreenList.add("REPORTS");
 		innerScreenList.add("ANALYTICS");
 	}
@@ -329,7 +330,9 @@ public class SurveyController extends HttpServlet
 					form.getQuestion().add(question);
 				}
 			}
-			else if(paramScreen.equals("QUESTION_TYPE_RADIO") || paramScreen.equals("QUESTION_TYPE_CHECKBOX"))
+			else if(paramScreen.equals("QUESTION_TYPE_RADIO") || 
+					paramScreen.equals("QUESTION_TYPE_CHECKBOX") || 
+					paramScreen.equals("QUESTION_TYPE_PULLDOWN"))
 			{
 				question = questionDAO.getQuestion(questionID);
 				if(paramScreen.equals("QUESTION_TYPE_RADIO"))
@@ -339,6 +342,10 @@ public class SurveyController extends HttpServlet
 				else if(paramScreen.equals("QUESTION_TYPE_CHECKBOX"))
 				{
 					question.setType("checkbox");
+				}
+				else if(paramScreen.equals("QUESTION_TYPE_PULLDOWN"))
+				{
+					question.setType("pulldown");
 				}
 				questionDAO.updateQuestion(question);
 				

@@ -1,4 +1,4 @@
-package org.sw.marketing.servlet;
+package org.sw.marketing.servlet.report.summary;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +23,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.fop.apps.FOPException;
@@ -46,13 +44,12 @@ import org.sw.marketing.data.form.Data.Form.Question.PossibleAnswer;
 import org.sw.marketing.data.form.Data.Submission;
 import org.sw.marketing.data.form.Data.Submission.Answer;
 import org.sw.marketing.transformation.TransformerHelper;
-import org.sw.marketing.util.ReadFile;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-@WebServlet("/html/survey/*")
-public class HTMLGenerator extends HttpServlet
+@WebServlet("/survey/pdf/summary/*")
+public class PDFGenerator extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
@@ -104,7 +101,6 @@ public class HTMLGenerator extends HttpServlet
 			e.printStackTrace();
 		}
 		
-
 		String startDateParam = null;
 		if(parameterMap.get("START_DATE") != null && parameterMap.get("START_DATE").size() > 0)
 		{
@@ -173,19 +169,26 @@ public class HTMLGenerator extends HttpServlet
 		data.getForm().add(form);
 		
 		String xmlStr = TransformerHelper.getXmlStr("org.sw.marketing.data.form", data);
-		StringWriter result = new StringWriter();
-		StreamResult resultStream = new StreamResult(result);
-		String htmlStr = null;
+		
+		FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());		
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		
 		try
-		{	
+		{
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, byteArrayOutputStream);
+			
 			/*
 			 * Prepare to transform XML with XSLT
 			 */
-			String htmlXsl = getServletContext().getInitParameter("assetPath") + "xsl/html/summary.xsl";
-			Source htmlXslSource = new StreamSource(new File(htmlXsl));
+			String pdfXsl = getServletContext().getInitParameter("assetPath") + "xsl/pdf/summary.xsl";
+			Source pdfXslSource = new StreamSource(new File(pdfXsl));
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer(htmlXslSource);
+			Transformer transformer = transformerFactory.newTransformer(pdfXslSource);
+
+			/*
+			 * Pipe XSL transformation result to FOP
+			 */
+			Result res = new SAXResult(fop.getDefaultHandler());
 
 			/*
 			 * Prepare XML input
@@ -195,20 +198,41 @@ public class HTMLGenerator extends HttpServlet
 			/*
 			 * Transform
 			 */
-			transformer.transform(src, resultStream);
-			htmlStr = result.toString();
+			transformer.transform(src, res);
 
-			String toolboxSkinPath = getServletContext().getInitParameter("assetPath") + "toolbox_1col.html";
-			String skinHtmlStr = ReadFile.getSkin(toolboxSkinPath);
-			skinHtmlStr = skinHtmlStr.replace("{NAME}", form.getTitle());
-			skinHtmlStr = skinHtmlStr.replace("{CONTENT}", htmlStr);
+			/*
+			 * Get XSL transformation and prepare to send it to FOP handler
+			 */
+			byte[] bytes = byteArrayOutputStream.toByteArray();			
+			src = new StreamSource(new ByteArrayInputStream(bytes));
+			res = new SAXResult(fop.getDefaultHandler());			
+			
+			/*
+			 * Generated PDF filename
+			 */
+			LocalDateTime nowLocalDateTime = LocalDateTime.now();
+			String nowFormattedLocalDateTime = nowLocalDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.ENGLISH)); //new SimpleDateFormat("yyyyMMddHHmmss", Locale.ENGLISH).format(nowLocalDateTime);
+			String pdfFileName = formID + "_" + nowFormattedLocalDateTime + ".pdf";
+
+			/*
+			 * Write PDF to disk
+			 */
+			FileOutputStream fileOutputStream = new FileOutputStream("E:\\assets\\pdf\\" + pdfFileName);
+			fileOutputStream.write(bytes);
+			fileOutputStream.close();
 			
 			/*
 			 * Display PDF in browser
 			 */
 			System.out.println(xmlStr);
-			response.setContentType("text/html");
-			response.getWriter().println(skinHtmlStr);
+			response.setContentType("application/pdf");
+			response.setContentLength(byteArrayOutputStream.size());
+			response.getOutputStream().write(byteArrayOutputStream.toByteArray());
+			response.getOutputStream().flush();
+		}
+		catch (FOPException e)
+		{
+			e.printStackTrace();
 		}
 		catch (TransformerConfigurationException e)
 		{

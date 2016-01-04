@@ -9,25 +9,24 @@
 			<xsl:variable name="webformBaseUrl" select="concat(/data/environment/serverName, 'webforms/public/')" />
 			<xsl:variable name="webformUrl" select="concat($webformBaseUrl, /data/form/prettyUrl)" />
 			<div class="row">
-				<div class="col-lg-8">
+				<div class="col-lg-12">
+					<nav>
+						<ul class="nav nav-pills">
+							<li role="presentation"><a href="javascript:switchTab('GENERAL');">General</a></li>
+							<li role="presentation"><a href="javascript:switchTab('QUESTION_LIST');">Questions</a></li>
+							<li role="presentation" class="active"><a href="#">Reports</a></li>
+							<li role="presentation"><a href="javascript:switchTab('ANALYTICS');">Analytics</a></li>
+						</ul>
+					</nav>
 					<h2>Generate Reports</h2>
 					<div class="form-group">
-						<label for="PDF_GENERATE">Generate PDF</label>
-						<p><a class="btn btn-default" href="pdf/survey/{/data/form/id}" target="_blank">Create</a></p>
+						<label for="PDF_GENERATE">Create PDF</label>
+						<p><a class="btn btn-default" href="survey/pdf/summary/{/data/form/id}" target="_blank">Summary</a></p>
 					</div>
 					<div class="btn-toolbar">
 						<a class="btn btn-primary" href="javascript:document.portal_form.ACTION.value='SAVE_FORM';document.portal_form.submit();">Save</a>
-						<a class="btn btn-danger" href="javascript:formListScreen();">Cancel</a>
+						<a class="btn btn-danger" href="javascript:formListScreen();">Back to Forms</a>
 					</div>
-				</div>
-				<!-- survey sidebar -->
-				<div class="col-lg-4">
-					<ul class="nav nav-pills nav-stacked">
-						<li role="presentation"><a href="javascript:switchTab('GENERAL');">General</a></li>
-						<li role="presentation"><a href="javascript:switchTab('QUESTION_LIST');">Questions</a></li>
-						<li role="presentation" class="active"><a href="#">Reports</a></li>
-						<li role="presentation"><a href="javascript:switchTab('ANALYTICS');">Analytics</a></li>
-					</ul>
 				</div>
 			</div>
 		</form>

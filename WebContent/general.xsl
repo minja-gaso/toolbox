@@ -9,7 +9,15 @@
 			<xsl:variable name="webformBaseUrl" select="concat(/data/environment/serverName, '/webform/public/')" />
 			<xsl:variable name="webformUrl" select="concat($webformBaseUrl, /data/form/prettyUrl)" />
 			<div class="row">
-				<div class="col-lg-8">
+				<div class="col-lg-12 bordered-area">				
+					<nav>
+						<ul class="nav nav-pills">
+							<li role="presentation" class="active"><a href="#">General</a></li>
+							<li role="presentation"><a href="javascript:switchTab('QUESTION_LIST');">Questions</a></li>
+							<li role="presentation"><a href="javascript:switchTab('REPORTS');">Reports</a></li>
+							<li role="presentation"><a href="javascript:switchTab('ANALYTICS');">Analytics</a></li>
+						</ul>
+					</nav>
 					<h2>General Information</h2>
 					<div class="form-group">
 						<label for="FORM_TITLE">Title</label>
@@ -21,12 +29,13 @@
 						<div class="input-group">
 							<span class="input-group-addon"><xsl:value-of select="$webformBaseUrl" /></span>
 							<input type="text" class="form-control" name="FORM_URL" id="FORM_URL" value="{/data/form/id}" />
+							<input type="hidden" name="HIDDEN_FORM_URL" id="HIDDEN_FORM_URL" value="{concat($webformBaseUrl, /data/form/id)}" />
 							<a href="{concat($webformBaseUrl, /data/form/id)}" class="input-group-addon" target="_blank"><span class="fa fa-external-link" /></a>
 						</div>
 					</div>			
 					<div class="form-group">
 						<label for="FORM_PRETTY_URL">Pretty URL</label>
-						<p class="help-block">Create a <em>Pretty URL</em> you can use instead of the generic ID-based option.  This will be better for SEO.</p>
+						<p class="help-block">We recommend a <em>Pretty URL</em>. You may use alphanumeric characters, hyphens, underscores and periods. This will be better for SEO.</p>
 						<div class="input-group">
 							<span class="input-group-addon"><xsl:value-of select="$webformBaseUrl" /></span>
 							<input type="text" class="form-control" name="FORM_PRETTY_URL" id="FORM_PRETTY_URL" value="{/data/form/prettyUrl}" />
@@ -45,16 +54,8 @@
 					</div>
 					<div class="btn-toolbar">
 						<a class="btn btn-primary" href="javascript:document.portal_form.ACTION.value='SAVE_FORM';document.portal_form.submit();">Save</a>
-						<a class="btn btn-danger" href="javascript:formListScreen();">Cancel</a>
+						<a class="btn btn-danger" href="javascript:formListScreen();">Back to Forms</a>
 					</div>
-				</div>
-				<!-- survey sidebar -->
-				<div class="col-lg-4">
-					<ul class="nav nav-pills nav-stacked">
-						<li role="presentation" class="active"><a href="#">General</a></li>
-						<li role="presentation"><a href="javascript:switchTab('QUESTION_LIST');">Questions</a></li>
-						<li role="presentation"><a href="javascript:switchTab('REPORTS');">Reports</a></li>
-					</ul>
 				</div>
 			</div>
 		</form>
