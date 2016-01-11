@@ -115,7 +115,7 @@
 								</div>
 								<div class="radio">
 									<label>
-										<input type="radio" name="QUESTION_FILTER" id="QUESTION_FILTER_EMAIL" value="email" disabled="disabled">
+										<input type="radio" name="QUESTION_FILTER" id="QUESTION_FILTER_EMAIL" value="email" xxdisabled="disabled">
 											<xsl:if test="filter = 'email'">
 												<xsl:attribute name="checked">checked</xsl:attribute>
 											</xsl:if>
