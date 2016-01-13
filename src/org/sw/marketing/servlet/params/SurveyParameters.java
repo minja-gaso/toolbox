@@ -29,7 +29,7 @@ public class SurveyParameters
 			 * ensure prettyURL is unique - if not, prepend form ID
 			 */
 			Form tempForm = formDAO.getFormByPrettyUrl(prettyUrl);
-			if(tempForm.getId() != form.getId() && tempForm.getPrettyUrl().equals(prettyUrl))
+			if(tempForm != null && tempForm.getId() != form.getId() && tempForm.getPrettyUrl().equals(prettyUrl))
 			{
 				form.setPrettyUrl(form.getId() + "-" + prettyUrl);
 			}
