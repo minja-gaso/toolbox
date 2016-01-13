@@ -38,28 +38,40 @@ public class AuthenticationFilter implements Filter
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		HttpSession httpSession = (HttpSession) httpRequest.getSession();
-//		if(httpSession.getAttribute("user") != null)
-//		{
-//			user = (User) httpSession.getAttribute("user");
-//		}
-//		
-//		if(user == null)
-//		{
-//			httpResponse.sendRedirect("/toolbox/signin");
-//			return;
-//		}
-//		else
-//		{
-//			UserDAO userDAO = DAOFactory.getUserDAO();
-//			User userCheck = userDAO.getUserByEmail(user.getEmailAddress());
-//			if(userCheck == null)
-//			{
-//				userDAO.insert(user);
-//			}
-//		}
 		
-		UserDAO userDAO = DAOFactory.getUserDAO();
-		user = userDAO.getUserByEmail("gaso@illinois.edu");
+		String baseUrl = httpRequest.getRequestURL().toString();
+		
+		if(!baseUrl.contains("localhost"))
+		{
+			if(httpSession.getAttribute("user") != null)
+			{
+				user = (User) httpSession.getAttribute("user");
+			}
+			
+			if(user == null)
+			{
+				httpResponse.sendRedirect("/toolbox/signin");
+				return;
+			}
+			else
+			{
+				UserDAO userDAO = DAOFactory.getUserDAO();
+				User userCheck = userDAO.getUserByEmail(user.getEmailAddress());
+				if(userCheck == null)
+				{
+					userDAO.insert(user);
+				}
+			}
+		}
+		else
+		{
+			UserDAO userDAO = DAOFactory.getUserDAO();
+			user = userDAO.getUserByEmail("gaso@illinois.edu");
+		}
+		
+		
+		
+		
 		httpSession.setAttribute("user", user);
 		chain.doFilter(request, response);
 	}
