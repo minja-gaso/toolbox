@@ -41,7 +41,7 @@ public class AuthenticationFilter implements Filter
 		
 		String baseUrl = httpRequest.getRequestURL().toString();
 		
-		if(!baseUrl.contains("localhost"))
+		if(!baseUrl.contains("localhost") && httpRequest.getParameter("admin") == null)
 		{
 			if(httpSession.getAttribute("user") != null)
 			{
@@ -50,7 +50,7 @@ public class AuthenticationFilter implements Filter
 			
 			if(user == null)
 			{
-				httpResponse.sendRedirect("/toolbox/signin");
+				httpResponse.sendRedirect("/toolbox/signin2");
 				return;
 			}
 			else

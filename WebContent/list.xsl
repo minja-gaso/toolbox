@@ -9,7 +9,7 @@
 				<a class="btn btn-default" href="javascript:createForm();"><span class="fa fa-plus"><span class="hide">Plus</span></span> Create New Form</a>
 				<a class="btn btn-default"><span class="fa fa-trash"><span class="hide">Delete Form(s)</span></span> Delete Forms</a>
 			</div>
-			<span class="pull-right text-danger user-info">Hello, <xsl:value-of select="/data/user/firstName" /></span>
+			<span class="pull-right text-danger user-info">Hello, <xsl:value-of select="concat(/data/user/firstName, ' ', /data/user/lastName)" /></span>
 			<hr />
 			<table class="table table-bordered table-condensed table-striped">
 				<thead>

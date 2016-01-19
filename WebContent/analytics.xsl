@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:variable name="webformBaseUrl" select="concat(/data/environment/serverName, '/webform/public/')" />
+	<xsl:variable name="webformById" select="concat($webformBaseUrl, /data/form/id)" />
+	<xsl:variable name="webformPrettyUrl" select="concat($webformBaseUrl, /data/form/prettyUrl)" />
+	<xsl:variable name="webformUrlToUse">
+		<xsl:value-of select="$webformBaseUrl" />
+		<xsl:choose>
+			<xsl:when test="string-length(/data/form/prettyUrl) &gt; 0"><xsl:value-of select="/data/form/prettyUrl" /></xsl:when>
+			<xsl:otherwise><xsl:value-of select="/data/form/id" /></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	<xsl:template match="/">
 		<form action="" method="post" name="portal_form">
 			<input type="hidden" name="ACTION" />
@@ -26,7 +36,7 @@
 								<div class="input-group">
 									<input type="text" class="form-control datepicker" name="START_DATE" id="START_DATE" placeholder="YYYY-MM-DD" readonly="readonly" />
 									<span class="input-group-addon" onclick="this.previousSibling.focus();"><span class="fa fa-calendar"><span class="sr-only">start date picker</span></span></span>
-								</div>					
+								</div>	
 							</div>
 							<div class="form-group nth-column">
 								<label for="END_DATE">End Date</label>
@@ -78,8 +88,9 @@
 					</div>
 					<hr />
 					<div class="btn-toolbar">
-						<a class="btn btn-primary" href="javascript:document.portal_form.ACTION.value='SAVE_FORM';document.portal_form.submit();">Save</a>
-						<a class="btn btn-danger" href="javascript:formListScreen();">Back to Forms</a>
+						<a class="btn btn-default" href="javascript:submitForm();">Save</a>
+						<a class="btn btn-default" href="javascript:formListScreen();">Back to Forms</a>
+						<a class="btn btn-default" href="{$webformUrlToUse}" target="_blank">View Form</a>
 					</div>
 				</div>
 			</div>

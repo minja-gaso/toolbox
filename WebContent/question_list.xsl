@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:variable name="quote"><xsl:text>'</xsl:text></xsl:variable>
+	<xsl:variable name="webformBaseUrl" select="concat(/data/environment/serverName, '/webform/public/')" />
+	<xsl:variable name="webformById" select="concat($webformBaseUrl, /data/form/id)" />
+	<xsl:variable name="webformPrettyUrl" select="concat($webformBaseUrl, /data/form/prettyUrl)" />
+	<xsl:variable name="webformUrlToUse">
+		<xsl:value-of select="$webformBaseUrl" />
+		<xsl:choose>
+			<xsl:when test="string-length(/data/form/prettyUrl) &gt; 0"><xsl:value-of select="/data/form/prettyUrl" /></xsl:when>
+			<xsl:otherwise><xsl:value-of select="/data/form/id" /></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	<xsl:template match="/">
 		<form action="" method="post" name="portal_form">
 			<input type="hidden" name="ACTION" />
@@ -11,17 +21,6 @@
 			<input type="hidden" name="PAGE_BREAK_ID" />
 			<input type="hidden" name="MOVE_QUESTION_NUMBER_DOWN" />
 			<input type="hidden" name="MOVE_QUESTION_NUMBER_UP" />
-			<!-- 
-			<input type="hidden" name="QUESTION_NUMBER" />
-			<input type="hidden" name="INSERT_QUESTION_AFTER" value="false" />
-			<input type="hidden" name="INSERT_AFTER_NUMBER" />
-			<input type="hidden" name="INSERT_INTO_PAGE" value="{/data/form/question[position() = last()]/page}" />
-			<input type="hidden" name="REMOVE_AFTER_NUMBER" />
-			<input type="hidden" name="REMOVE_PAGE_IN_EFFECT" />
-			<input type="hidden" name="PAGE_TO_DELETE" />
-			<input type="hidden" name="MOVE_QUESTION_NUMBER_DOWN" />
-			<input type="hidden" name="MOVE_QUESTION_NUMBER_UP" />
-			 -->
 			<!-- survey content -->
 			<div class="row">
 				<div class="col-lg-12">					
@@ -34,9 +33,6 @@
 						</ul>
 					</nav>
 					<h2>List of Questions</h2>
-					<!-- 
-					<a class="btn btn-default pull-right" href="javascript:createQuestion();"><span class="fa fa-plus-circle" /> Add Question</a>
-					-->
 					<table class="table table-condensed">
 						<thead>
 							<tr> 
@@ -97,11 +93,6 @@
 											</xsl:otherwise>
 										</xsl:choose>
 									</td>
-									<!-- 
-									<td class="text-center">
-										<xsl:text><xsl:value-of select="id" /></xsl:text>
-									</td> 
-									-->
 									<td class="text-center">
 										<xsl:text><xsl:value-of select="number" /></xsl:text>
 									</td>
@@ -144,8 +135,9 @@
 					</table>
 					<div class="form-row">
 						<div class="btn-toolbar">
-							<a class="btn btn-primary" href="javascript:submitForm();">Save</a>
-							<a class="btn btn-danger" href="javascript:formListScreen();">Back to Forms</a>
+							<a class="btn btn-default" href="javascript:submitForm();">Save</a>
+							<a class="btn btn-default" href="javascript:formListScreen();">Back to Forms</a>
+							<a class="btn btn-default" href="{$webformUrlToUse}" target="_blank">View Form</a>
 						</div>
 					</div>
 				</div>

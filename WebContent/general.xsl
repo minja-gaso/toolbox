@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:variable name="webformBaseUrl" select="concat(/data/environment/serverName, '/webform/public/')" />
+	<xsl:variable name="webformById" select="concat($webformBaseUrl, /data/form/id)" />
+	<xsl:variable name="webformPrettyUrl" select="concat($webformBaseUrl, /data/form/prettyUrl)" />
+	<xsl:variable name="webformUrlToUse">
+		<xsl:value-of select="$webformBaseUrl" />
+		<xsl:choose>
+			<xsl:when test="string-length(/data/form/prettyUrl) &gt; 0"><xsl:value-of select="/data/form/prettyUrl" /></xsl:when>
+			<xsl:otherwise><xsl:value-of select="/data/form/id" /></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	<xsl:template match="/">
 		<form action="" method="post" name="portal_form">
 			<input type="hidden" name="ACTION" />
 			<input type="hidden" name="SCREEN" value="GENERAL" />
 			<input type="hidden" name="FORM_ID" value="{/data/form/id}" />
 			<!-- survey content -->
-			<xsl:variable name="webformBaseUrl" select="concat(/data/environment/serverName, '/webform/public/')" />
-			<xsl:variable name="webformUrl" select="concat($webformBaseUrl, /data/form/prettyUrl)" />
 			<div class="row">
 				<div class="col-lg-12 bordered-area">				
 					<nav>
@@ -29,7 +37,7 @@
 						<div class="input-group">
 							<span class="input-group-addon"><xsl:value-of select="$webformBaseUrl" /></span>
 							<input type="text" class="form-control" name="FORM_URL" id="FORM_URL" value="{/data/form/id}" />
-							<input type="hidden" name="HIDDEN_FORM_URL" id="HIDDEN_FORM_URL" value="{concat($webformBaseUrl, /data/form/id)}" />
+							<input type="hidden" name="HIDDEN_FORM_URL" id="HIDDEN_FORM_URL" value="{$webformById}" />
 							<a href="{concat($webformBaseUrl, /data/form/id)}" class="input-group-addon" target="_blank"><span class="fa fa-external-link" /></a>
 						</div>
 					</div>			
@@ -39,7 +47,7 @@
 						<div class="input-group">
 							<span class="input-group-addon"><xsl:value-of select="$webformBaseUrl" /></span>
 							<input type="text" class="form-control" name="FORM_PRETTY_URL" id="FORM_PRETTY_URL" value="{/data/form/prettyUrl}" />
-							<a href="{$webformUrl}" class="input-group-addon" target="_blank"><span class="fa fa-external-link" /></a>
+							<a href="{$webformPrettyUrl}" class="input-group-addon" target="_blank"><span class="fa fa-external-link" /></a>
 						</div>
 					</div>		
 					<div class="form-group">
@@ -53,8 +61,9 @@
 						<input type="text" class="form-control" name="FORM_SKIN_SELECTOR" id="FORM_SKIN_SELECTOR" value="{/data/form/skinSelector}" />
 					</div>
 					<div class="btn-toolbar">
-						<a class="btn btn-primary" href="javascript:document.portal_form.ACTION.value='SAVE_FORM';document.portal_form.submit();">Save</a>
-						<a class="btn btn-danger" href="javascript:formListScreen();">Back to Forms</a>
+						<a class="btn btn-default" href="javascript:document.portal_form.ACTION.value='SAVE_FORM';document.portal_form.submit();">Save</a>
+						<a class="btn btn-default" href="javascript:formListScreen();">Back to Forms</a>
+						<a class="btn btn-default" href="{$webformUrlToUse}" target="_blank">View Form</a>
 					</div>
 				</div>
 			</div>
