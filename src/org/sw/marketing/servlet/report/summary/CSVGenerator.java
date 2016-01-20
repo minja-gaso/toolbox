@@ -128,6 +128,7 @@ public class CSVGenerator extends HttpServlet {
 		else
 		{
 			response.getWriter().println("There are no questions associated with this form/survey.");
+			return;
 		}
 		
 

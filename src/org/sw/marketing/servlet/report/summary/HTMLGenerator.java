@@ -169,6 +169,11 @@ public class HTMLGenerator extends HttpServlet
 				}
 			}
 		}
+		else
+		{
+			response.getWriter().println("There are no questions associated with this form/survey.");
+			return;
+		}
 		data.getForm().add(form);
 		
 		String xmlStr = TransformerHelper.getXmlStr("org.sw.marketing.data.form", data);

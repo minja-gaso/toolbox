@@ -1,5 +1,6 @@
 package org.sw.marketing.servlet;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -22,6 +23,7 @@ import org.sw.marketing.data.form.Data.Environment;
 import org.sw.marketing.data.form.Data.Form;
 import org.sw.marketing.data.form.Data.Form.Question;
 import org.sw.marketing.data.form.Data.Form.Question.PossibleAnswer;
+import org.sw.marketing.data.form.Data.Message;
 import org.sw.marketing.data.form.Data.Submission;
 import org.sw.marketing.data.form.Data.Submission.Answer;
 import org.sw.marketing.servlet.params.QuestionParameters;
@@ -162,13 +164,36 @@ public class SurveyController extends HttpServlet
 				form = formDAO.getForm(formID);
 			}
 			else if(paramAction.equals("DELETE_FORM"))
-			{
+			{				
+				Message message = new Message();
+				message.setType("error");
+				message.setLabel("The form has been deleted.");
+				data.getMessage().add(message);
+				
 				formDAO.deleteForm(formID);
+				formID = 0;
 			}
 			else if(paramAction.equals("SAVE_FORM"))
 			{
 				form = SurveyParameters.process(request, formDAO.getForm(formID));
-				formDAO.updateForm(form);
+				
+				Form tempForm = formDAO.getFormByPrettyUrl(form.getPrettyUrl());
+				if(tempForm != null && tempForm.getId() != form.getId() && tempForm.getPrettyUrl().equals(form.getPrettyUrl()))
+				{
+					Message message = new Message();
+					message.setType("error");
+					message.setLabel("The pretty URL is already in use.  Please choose a unique one.");
+					data.getMessage().add(message);
+				}
+				else
+				{
+					formDAO.updateForm(form);
+					
+					Message message = new Message();
+					message.setType("success");
+					message.setLabel("The form has been saved.");
+					data.getMessage().add(message);
+				}
 			}
 			else if(paramAction.equals("CREATE_QUESTION"))
 			{
@@ -195,6 +220,11 @@ public class SurveyController extends HttpServlet
 			{
 				question = QuestionParameters.process(request, questionDAO.getQuestion(questionID));
 				questionDAO.updateQuestion(question);
+				
+				Message message = new Message();
+				message.setType("success");
+				message.setLabel("The question has been saved.");
+				data.getMessage().add(message);
 			}
 			else if(paramAction.equals("DELETE_QUESTION"))
 			{
@@ -206,6 +236,11 @@ public class SurveyController extends HttpServlet
 				}
 				questionDAO.deleteQuestion(questionID);
 				questionDAO.moveUpQuestions(question.getNumber(), formID);
+				
+				Message message = new Message();
+				message.setType("success");
+				message.setLabel("The question has been deleted.");
+				data.getMessage().add(message);
 			}
 			else if(paramAction.equals("INSERT_PAGE_BREAK"))
 			{
@@ -284,6 +319,11 @@ public class SurveyController extends HttpServlet
 				
 				question = QuestionParameters.process(request, questionDAO.getQuestion(questionID));
 				questionDAO.updateQuestion(question);
+				
+				Message message = new Message();
+				message.setType("success");
+				message.setLabel("The question and answer(s) have been been saved.");
+				data.getMessage().add(message);
 			}
 		}
 		
@@ -301,12 +341,12 @@ public class SurveyController extends HttpServlet
 				
 			if(paramScreen.equals("GENERAL"))
 			{
-				xslScreen = "/general.xsl";
+				xslScreen = "general.xsl";
 			}
 			else if(paramScreen.equals("QUESTION_LIST"))
 			{
 				questionList = questionDAO.getQuestions(formID);
-				xslScreen = "/question_list.xsl";
+				xslScreen = "question_list.xsl";
 				if(questionList != null)
 				{
 					form.getQuestion().addAll(questionList);
@@ -324,7 +364,7 @@ public class SurveyController extends HttpServlet
 					question.setType("textarea");
 				}
 				questionDAO.updateQuestion(question);
-				xslScreen = "/question_type_standard.xsl";
+				xslScreen = "question_type_standard.xsl";
 				if(question != null)
 				{
 					form.getQuestion().add(question);
@@ -355,7 +395,7 @@ public class SurveyController extends HttpServlet
 					question.getPossibleAnswer().addAll(possibleAnswerList);
 				}
 				
-				xslScreen = "/question_type_multiple_choice.xsl";
+				xslScreen = "question_type_multiple_choice.xsl";
 				if(question != null)
 				{
 					form.getQuestion().add(question);
@@ -363,15 +403,15 @@ public class SurveyController extends HttpServlet
 			}
 			else if(paramScreen.equals("REPORTS"))
 			{
-				xslScreen = "/reports.xsl";
+				xslScreen = "reports.xsl";
 			}
 			else if(paramScreen.equals("ANALYTICS"))
 			{
-				xslScreen = "/analytics.xsl";
+				xslScreen = "analytics.xsl";
 			}
 			else
 			{
-				xslScreen = "/general.xsl";
+				xslScreen = "general.xsl";
 			}
 			
 			if(form != null)
@@ -382,7 +422,7 @@ public class SurveyController extends HttpServlet
 		else
 		{
 			formList = formDAO.getForms();
-			xslScreen = "/list.xsl";
+			xslScreen = "list.xsl";
 			if(formList != null)
 			{
 				data.getForm().addAll(formList);
@@ -394,7 +434,9 @@ public class SurveyController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		String xmlStr = TransformerHelper.getXmlStr("org.sw.marketing.data.form", data);
-		String htmlStr = TransformerHelper.getHtmlStr(xmlStr, getServletContext().getResourceAsStream(xslScreen));
+		xslScreen = getServletContext().getInitParameter("assetXslPath") + xslScreen;
+		String xslStr = ReadFile.getSkin(xslScreen);
+		String htmlStr = TransformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		
 		String toolboxSkinPath = getServletContext().getInitParameter("assetPath") + "toolbox.html";
 		String skinHtmlStr = ReadFile.getSkin(toolboxSkinPath);

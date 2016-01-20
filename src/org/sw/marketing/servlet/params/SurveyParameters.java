@@ -25,18 +25,8 @@ public class SurveyParameters
 			prettyUrl = prettyUrl.replaceAll("[^A-Za-z0-9\\-\\.\\_\\~\\s]", "").replaceAll("\\s", "-");
 			prettyUrl = prettyUrl.toLowerCase();
 			
-			/*
-			 * ensure prettyURL is unique - if not, prepend form ID
-			 */
-			Form tempForm = formDAO.getFormByPrettyUrl(prettyUrl);
-			if(tempForm != null && tempForm.getId() != form.getId() && tempForm.getPrettyUrl().equals(prettyUrl))
-			{
-				form.setPrettyUrl(form.getId() + "-" + prettyUrl);
-			}
-			else
-			{
-				form.setPrettyUrl(prettyUrl);
-			}
+			form.setPrettyUrl(prettyUrl);
+			
 		}
 		if(parameterMap.get("FORM_SKIN_URL") != null)
 		{
