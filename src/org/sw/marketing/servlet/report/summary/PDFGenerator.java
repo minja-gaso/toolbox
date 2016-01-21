@@ -210,16 +210,16 @@ public class PDFGenerator extends HttpServlet
 			/*
 			 * Generated PDF filename
 			 */
-			LocalDateTime nowLocalDateTime = LocalDateTime.now();
-			String nowFormattedLocalDateTime = nowLocalDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.ENGLISH)); //new SimpleDateFormat("yyyyMMddHHmmss", Locale.ENGLISH).format(nowLocalDateTime);
-			String pdfFileName = formID + "_" + nowFormattedLocalDateTime + ".pdf";
+//			LocalDateTime nowLocalDateTime = LocalDateTime.now();
+//			String nowFormattedLocalDateTime = nowLocalDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.ENGLISH)); //new SimpleDateFormat("yyyyMMddHHmmss", Locale.ENGLISH).format(nowLocalDateTime);
+//			String pdfFileName = formID + "_" + nowFormattedLocalDateTime + ".pdf";
 
 			/*
 			 * Write PDF to disk
 			 */
-			FileOutputStream fileOutputStream = new FileOutputStream("E:\\assets\\pdf\\" + pdfFileName);
-			fileOutputStream.write(bytes);
-			fileOutputStream.close();
+//			FileOutputStream fileOutputStream = new FileOutputStream("E:\\assets\\pdf\\" + pdfFileName);
+//			fileOutputStream.write(bytes);
+//			fileOutputStream.close();
 			
 			/*
 			 * Display PDF in browser
