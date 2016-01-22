@@ -166,9 +166,20 @@ public class PDFGenerator extends HttpServlet
 				}
 			}
 		}
+//		if(form.getType().equals("self_assessment"))
+//		{
+//			java.util.List<Data.PossibleAnswer> possibleAnswers = answerDAO.getPossibleAnswersByForm(formID);
+//			if(possibleAnswers != null)
+//			{
+//				data.getPossibleAnswer().addAll(possibleAnswers);
+//			}
+//		}
 		data.getForm().add(form);
+
+		TransformerHelper transformerHelper = new TransformerHelper();
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("assetXslFormsPath"));
 		
-		String xmlStr = TransformerHelper.getXmlStr("org.sw.marketing.data.form", data);
+		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.form", data);
 		
 		FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());		
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

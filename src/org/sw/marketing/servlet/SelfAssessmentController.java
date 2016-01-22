@@ -3,6 +3,7 @@ package org.sw.marketing.servlet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,31 +33,19 @@ import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 import org.sw.marketing.data.form.Data.User;
 
-@WebServlet("/survey")
-public class SurveyController extends HttpServlet
+@WebServlet("/selfassessment")
+public class SelfAssessmentController extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 	
-	//
 	java.util.List<String> innerScreenList = new java.util.ArrayList<String>();
-//	protected static final String LIST_SCREEN = "/surveyList";
-//	protected static final String CREATE_SCREEN = "/surveyCreate";
-//	protected static final String GENERAL_SCREEN = "/surveyGeneral";
-//	protected static final String QUESTION_LIST_SCREEN = "/surveyQuestions";
-//	protected static final String QUESTION_TYPE_TEXT_SCREEN = "/surveyQuestionTypeText";
-//	protected static final String QUESTION_TYPE_TEXTAREA_SCREEN = "/surveyQuestionTypeTextarea";
-//	protected static final String QUESTION_TYPE_RADIO_SCREEN = "/surveyQuestionTypeRadio";
-//	protected static final String QUESTION_TYPE_CHECKBOX_SCREEN = "/surveyQuestionTypeCheckbox";
 	
 	public void init()
 	{
 		innerScreenList.add("GENERAL");
-		innerScreenList.add("QUESTION_LIST");
-		innerScreenList.add("QUESTION_TYPE_TEXT");
-		innerScreenList.add("QUESTION_TYPE_TEXTAREA");
-		innerScreenList.add("QUESTION_TYPE_RADIO");
-		innerScreenList.add("QUESTION_TYPE_CHECKBOX");
-		innerScreenList.add("QUESTION_TYPE_PULLDOWN");
+		innerScreenList.add("QUESTIONS_AND_ANSWERS");
+		innerScreenList.add("ANSWERS");
+		innerScreenList.add("SCORES");
 		innerScreenList.add("REPORTS");
 		innerScreenList.add("ANALYTICS");
 	}
@@ -72,8 +61,6 @@ public class SurveyController extends HttpServlet
 		FormDAO formDAO = DAOFactory.getFormDAO();
 		QuestionDAO questionDAO = DAOFactory.getQuestionDAO();
 		AnswerDAO answerDAO = DAOFactory.getPossibleAnswerDAO();
-//		SubmissionDAO submissionDAO = DAOFactory.getSubmissionDAO();
-//		SubmissionAnswerDAO submissionAnswerDAO = DAOFactory.getSubmissionAnswerDAO();
 		
 		/*
 		 * Data Initialization
@@ -84,10 +71,6 @@ public class SurveyController extends HttpServlet
 		java.util.List<Question> questionList = null;
 		Question question = null;
 		java.util.List<PossibleAnswer> possibleAnswerList = null;
-//		java.util.List<Answer> answerList = null;
-//		Answer answer = null;
-//		java.util.List<Submission> submissionList = null;
-//		Submission submission = null;
 		User user = null;
 		
 		/*
@@ -160,7 +143,7 @@ public class SurveyController extends HttpServlet
 			String paramAction = parameterMap.get("ACTION")[0];
 			if(paramAction.equals("CREATE_FORM"))
 			{
-				formID = formDAO.createForm(user);
+				formID = formDAO.createFormSelfAssessment(user);
 				form = formDAO.getForm(formID);
 			}
 			else if(paramAction.equals("DELETE_FORM"))
@@ -203,7 +186,12 @@ public class SurveyController extends HttpServlet
 				{
 					latestPage = 1;
 				}
-				questionDAO.insertQuestion(nextNumber, latestPage, formID);
+				questionDAO.insertQuestionSelfAssessment(nextNumber, latestPage, formID);
+				
+				Message message = new Message();
+				message.setType("success");
+				message.setLabel("The question has been added.");
+				data.getMessage().add(message);
 			}
 			else if(paramAction.equals("INSERT_QUESTION"))
 			{
@@ -214,17 +202,55 @@ public class SurveyController extends HttpServlet
 				{
 					questionDAO.moveDownQuestions(questionNumber, formID);
 				}
-				questionDAO.insertQuestion(question.getNumber() + 1, question.getPage(), formID);
-			}
-			else if(paramAction.equals("SAVE_QUESTION"))
-			{
-				question = QuestionParameters.process(request, questionDAO.getQuestion(questionID));
-				questionDAO.updateQuestion(question);
+				questionDAO.insertQuestionSelfAssessment(question.getNumber() + 1, question.getPage(), formID);
 				
 				Message message = new Message();
 				message.setType("success");
-				message.setLabel("The question has been saved.");
+				message.setLabel("The question has been added.");
 				data.getMessage().add(message);
+			}
+			else if(paramAction.equals("SAVE_QUESTIONS"))
+			{
+				for(Entry<String, String[]> entry : parameterMap.entrySet())
+				{
+					String key = entry.getKey();
+					String[] values = entry.getValue();
+					
+					if(key.contains("QUESTION_ENTRY_"))
+					{
+						questionID = Long.parseLong(key.split("QUESTION_ENTRY_")[1]);
+						String value = values[0];
+						
+						question = questionDAO.getQuestion(questionID);
+						question.setLabel(value);
+						questionDAO.updateQuestion(question);
+					}
+				}
+			}
+			else if(paramAction.equals("SAVE_ANSWERS"))
+			{
+				for(Entry<String, String[]> entry : parameterMap.entrySet())
+				{
+					String key = entry.getKey();
+					String[] values = entry.getValue();
+					
+					if(key.contains("ANSWER_ENTRY_"))
+					{
+						long answerID = Long.parseLong(key.split("ANSWER_ENTRY_")[1]);
+						String labelStr = values[0];
+						
+						PossibleAnswer answer = answerDAO.getPossibleAnswerForForm(answerID);
+						answer.setLabel(labelStr);
+						
+						String valueStr = request.getParameter("ANSWER_VALUE_" + answerID);
+						if(valueStr != null)
+						{
+							int valueInt = Integer.parseInt(valueStr);
+							answer.setValue(valueInt);
+						}
+						answerDAO.updatePossibleAnswer(answer);
+					}
+				}
 			}
 			else if(paramAction.equals("DELETE_QUESTION"))
 			{
@@ -238,7 +264,7 @@ public class SurveyController extends HttpServlet
 				questionDAO.moveUpQuestions(question.getNumber(), formID);
 				
 				Message message = new Message();
-				message.setType("success");
+				message.setType("error");
 				message.setLabel("The question has been deleted.");
 				data.getMessage().add(message);
 			}
@@ -287,7 +313,7 @@ public class SurveyController extends HttpServlet
 				questionDAO.updateQuestion(question);
 				questionDAO.updateQuestion(secondaryQuestion);
 			}
-			else if(parameterMap.get("ANSWER_ADD") != null && paramAction.equals("SAVE_ANSWERS"))
+			else if(parameterMap.get("ANSWER_ADD") != null && paramAction.equals("ADD_ANSWERS"))
 			{
 				/*
 				 * process filter
@@ -312,18 +338,34 @@ public class SurveyController extends HttpServlet
 				while(answerIter.hasNext())
 				{
 					String answerStr = answerIter.next();
+					String[] answerArr = answerStr.split(",");
 					possibleAnswer = new PossibleAnswer();
-					possibleAnswer.setLabel(answerStr);
-					answerDAO.insertAnswerToQuestion(questionID, possibleAnswer);
+					possibleAnswer.setLabel(answerArr[0].trim());
+					int value = 0;
+					if(answerArr.length > 1)
+					{
+						try
+						{
+							value = Integer.parseInt(answerArr[1].trim());
+						}
+						catch(NumberFormatException e)
+						{
+							value = 0;
+						}
+					}
+					possibleAnswer.setValue(value);
+					answerDAO.insertAnswerToForm(formID, possibleAnswer);
 				}
-				
-				question = QuestionParameters.process(request, questionDAO.getQuestion(questionID));
-				questionDAO.updateQuestion(question);
 				
 				Message message = new Message();
 				message.setType("success");
-				message.setLabel("The question and answer(s) have been been saved.");
+				message.setLabel("The answer(s) have been been saved.");
 				data.getMessage().add(message);
+			}
+			else if(paramAction.equals("DELETE_ANSWER"))
+			{
+				long answerID = Long.parseLong(parameterMap.get("ANSWER_ID")[0]);
+				answerDAO.deleteAnswerForForm(answerID);
 			}
 		}
 		
@@ -343,63 +385,39 @@ public class SurveyController extends HttpServlet
 			{
 				xslScreen = "general.xsl";
 			}
-			else if(paramScreen.equals("QUESTION_LIST"))
+			else if(paramScreen.equals("QUESTIONS_AND_ANSWERS"))
 			{
 				questionList = questionDAO.getQuestions(formID);
-				xslScreen = "question_list.xsl";
+				xslScreen = "questions_and_answers.xsl";
 				if(questionList != null)
 				{
 					form.getQuestion().addAll(questionList);
 				}
-			}
-			else if(paramScreen.equals("QUESTION_TYPE_TEXT") || paramScreen.equals("QUESTION_TYPE_TEXTAREA"))
+			}			
+			else if(paramScreen.equals("ANSWERS"))
 			{
-				question = questionDAO.getQuestion(questionID);
-				if(paramScreen.equals("QUESTION_TYPE_TEXT"))
+				java.util.List<Data.PossibleAnswer> possibleAnswers = answerDAO.getPossibleAnswersByForm(formID);
+				if(possibleAnswers != null)
 				{
-					question.setType("text");
+					data.getPossibleAnswer().addAll(possibleAnswers);
 				}
-				else if(paramScreen.equals("QUESTION_TYPE_TEXTAREA"))
-				{
-					question.setType("textarea");
-				}
-				questionDAO.updateQuestion(question);
-				xslScreen = "question_type_standard.xsl";
-				if(question != null)
-				{
-					form.getQuestion().add(question);
-				}
-			}
-			else if(paramScreen.equals("QUESTION_TYPE_RADIO") || 
-					paramScreen.equals("QUESTION_TYPE_CHECKBOX") || 
-					paramScreen.equals("QUESTION_TYPE_PULLDOWN"))
+				xslScreen = "answers.xsl";
+			}		
+			else if(paramScreen.equals("SCORES"))
 			{
-				question = questionDAO.getQuestion(questionID);
-				if(paramScreen.equals("QUESTION_TYPE_RADIO"))
+				questionList = questionDAO.getQuestions(formID);
+				xslScreen = "questions_and_answers.xsl";
+				if(questionList != null)
 				{
-					question.setType("radio");
-				}
-				else if(paramScreen.equals("QUESTION_TYPE_CHECKBOX"))
-				{
-					question.setType("checkbox");
-				}
-				else if(paramScreen.equals("QUESTION_TYPE_PULLDOWN"))
-				{
-					question.setType("pulldown");
-				}
-				questionDAO.updateQuestion(question);
-				
-				possibleAnswerList = answerDAO.getPossibleAnswers(questionID);
-				if(possibleAnswerList != null)
-				{
-					question.getPossibleAnswer().addAll(possibleAnswerList);
+					form.getQuestion().addAll(questionList);
 				}
 				
-				xslScreen = "question_type_multiple_choice.xsl";
-				if(question != null)
+				java.util.List<Data.PossibleAnswer> possibleAnswers = answerDAO.getPossibleAnswersByForm(formID);
+				if(possibleAnswers != null)
 				{
-					form.getQuestion().add(question);
+					data.getPossibleAnswer().addAll(possibleAnswers);
 				}
+				xslScreen = "scores.xsl";
 			}
 			else if(paramScreen.equals("REPORTS"))
 			{
@@ -421,7 +439,7 @@ public class SurveyController extends HttpServlet
 		}
 		else
 		{
-			formList = formDAO.getForms(data);
+			formList = formDAO.getFormsSelfAssessment(data);
 			xslScreen = "list.xsl";
 			if(formList != null)
 			{
@@ -430,7 +448,7 @@ public class SurveyController extends HttpServlet
 		}
 
 		Environment environment = new Environment();
-		environment.setComponentId(1);
+		environment.setComponentId(2);
 		environment.setServerName(getBaseUrl(request));
 		data.setEnvironment(environment);
 		
@@ -477,3 +495,4 @@ public class SurveyController extends HttpServlet
 		}
 	}
 }
+

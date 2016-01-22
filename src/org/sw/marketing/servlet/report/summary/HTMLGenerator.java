@@ -175,8 +175,11 @@ public class HTMLGenerator extends HttpServlet
 			return;
 		}
 		data.getForm().add(form);
+
+		TransformerHelper transformerHelper = new TransformerHelper();
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("assetXslFormsPath"));
 		
-		String xmlStr = TransformerHelper.getXmlStr("org.sw.marketing.data.form", data);
+		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.form", data);
 		StringWriter result = new StringWriter();
 		StreamResult resultStream = new StreamResult(result);
 		String htmlStr = null;

@@ -40,9 +40,33 @@ public class FrontController extends HttpServlet
 		request.setAttribute("parameterMap", parameterMap);
 		
 		String paramComponentId = request.getParameter("COMPONENT_ID");
+		int componentId = 0;
+		if(paramComponentId != null)
+		{
+			try
+			{
+				componentId = Integer.parseInt(paramComponentId);
+			}
+			catch(NumberFormatException e)
+			{
+				componentId = 1;
+			}
+		}
 		if(paramComponentId == null)
 		{
 			request.getRequestDispatcher("/survey").forward(request, response);
+		}
+		else
+		{
+			if(componentId == 1)
+			{
+				request.getRequestDispatcher("/survey").forward(request, response);
+			}
+			else if(componentId == 2)
+			{
+
+				request.getRequestDispatcher("/selfassessment").forward(request, response);
+			}
 		}
 	}
 
