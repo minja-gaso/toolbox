@@ -185,6 +185,13 @@ public class SurveyController extends HttpServlet
 					message.setLabel("The pretty URL is already in use.  Please choose a unique one.");
 					data.getMessage().add(message);
 				}
+				else if(parameterMap.get("FORM_PRETTY_URL")[0].trim().equals(""))
+				{
+					Message message = new Message();
+					message.setType("error");
+					message.setLabel("Please enter a pretty URL.");
+					data.getMessage().add(message);
+				}
 				else
 				{
 					formDAO.updateForm(form);

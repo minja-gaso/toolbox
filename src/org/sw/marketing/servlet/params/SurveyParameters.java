@@ -9,9 +9,7 @@ import org.sw.marketing.data.form.Data.Form;
 public class SurveyParameters
 {
 	public static Form process(HttpServletRequest request, Form form)
-	{
-		FormDAO formDAO = DAOFactory.getFormDAO();
-		
+	{		
 		@SuppressWarnings("unchecked")
 		java.util.Map<String, String[]> parameterMap = (java.util.HashMap<String, String[]>) request.getAttribute("parameterMap");
 
