@@ -17,6 +17,10 @@ public class SurveyParameters
 		{
 			form.setTitle(parameterMap.get("FORM_TITLE")[0]);
 		}
+		if(parameterMap.get("FORM_STATUS") != null)
+		{
+			form.setStatus(parameterMap.get("FORM_STATUS")[0]);
+		}
 		if(parameterMap.get("FORM_PRETTY_URL") != null)
 		{
 			String prettyUrl = parameterMap.get("FORM_PRETTY_URL")[0];
@@ -33,6 +37,19 @@ public class SurveyParameters
 		if(parameterMap.get("FORM_SKIN_SELECTOR") != null)
 		{
 			form.setSkinSelector(parameterMap.get("FORM_SKIN_SELECTOR")[0]);
+		}
+		if(parameterMap.get("FORM_MAX_SUBMISSIONS") != null)
+		{
+			int maxSubmissions = 0;
+			try
+			{
+				maxSubmissions = Integer.parseInt(parameterMap.get("FORM_MAX_SUBMISSIONS")[0]);
+			}
+			catch(NumberFormatException e)
+			{
+				maxSubmissions = form.getMaxSubmissions();
+			}
+			form.setMaxSubmissions(maxSubmissions);
 		}
 
 		return form;

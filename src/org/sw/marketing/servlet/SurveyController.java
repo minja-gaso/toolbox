@@ -39,14 +39,6 @@ public class SurveyController extends HttpServlet
 	
 	//
 	java.util.List<String> innerScreenList = new java.util.ArrayList<String>();
-//	protected static final String LIST_SCREEN = "/surveyList";
-//	protected static final String CREATE_SCREEN = "/surveyCreate";
-//	protected static final String GENERAL_SCREEN = "/surveyGeneral";
-//	protected static final String QUESTION_LIST_SCREEN = "/surveyQuestions";
-//	protected static final String QUESTION_TYPE_TEXT_SCREEN = "/surveyQuestionTypeText";
-//	protected static final String QUESTION_TYPE_TEXTAREA_SCREEN = "/surveyQuestionTypeTextarea";
-//	protected static final String QUESTION_TYPE_RADIO_SCREEN = "/surveyQuestionTypeRadio";
-//	protected static final String QUESTION_TYPE_CHECKBOX_SCREEN = "/surveyQuestionTypeCheckbox";
 	
 	public void init()
 	{
@@ -59,6 +51,8 @@ public class SurveyController extends HttpServlet
 		innerScreenList.add("QUESTION_TYPE_PULLDOWN");
 		innerScreenList.add("REPORTS");
 		innerScreenList.add("ANALYTICS");
+		innerScreenList.add("MESSAGES");
+		innerScreenList.add("EDIT_MESSAGE");
 	}
 
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -72,22 +66,17 @@ public class SurveyController extends HttpServlet
 		FormDAO formDAO = DAOFactory.getFormDAO();
 		QuestionDAO questionDAO = DAOFactory.getQuestionDAO();
 		AnswerDAO answerDAO = DAOFactory.getPossibleAnswerDAO();
-//		SubmissionDAO submissionDAO = DAOFactory.getSubmissionDAO();
-//		SubmissionAnswerDAO submissionAnswerDAO = DAOFactory.getSubmissionAnswerDAO();
 		
 		/*
 		 * Data Initialization
 		 */
 		Data data = new Data();
+		Environment environment = new Environment();
 		java.util.List<Form> formList = null;
 		Form form = null;
 		java.util.List<Question> questionList = null;
 		Question question = null;
 		java.util.List<PossibleAnswer> possibleAnswerList = null;
-//		java.util.List<Answer> answerList = null;
-//		Answer answer = null;
-//		java.util.List<Submission> submissionList = null;
-//		Submission submission = null;
 		User user = null;
 		
 		/*
@@ -337,6 +326,47 @@ public class SurveyController extends HttpServlet
 				long answerID = Long.parseLong(parameterMap.get("ANSWER_ID")[0]);
 				answerDAO.deleteAnswer(answerID);
 			}
+			else if(paramAction.equals("SAVE_MESSAGE"))
+			{
+				if(parameterMap.get("MESSAGE_NAME") != null && formID > 0)
+				{
+					form = formDAO.getForm(formID);
+					String paramMessageScreen = parameterMap.get("MESSAGE_NAME")[0];
+					if(paramMessageScreen.equals("MESSAGE_PUBLIC"))
+					{
+						String intro = request.getParameter("MESSAGE_INTRO");						
+						String closing = request.getParameter("MESSAGE_CLOSING");
+						form.setMessagePublicFormIntro(intro);
+						form.setMessagePublicFormClosing(closing);
+					}
+					else
+					{
+						String body = request.getParameter("MESSAGE_BODY");
+						
+						if(paramMessageScreen.equals("MESSAGE_NOT_STARTED"))
+						{
+							form.setMessageNotStarted(body);
+						}
+						else if(paramMessageScreen.equals("MESSAGE_ENDED"))
+						{
+							form.setMessageEnded(body);
+						}
+						else if(paramMessageScreen.equals("MESSAGE_MAX_SUBMISSIONS"))
+						{
+							form.setMessageMaxSubmitted(body);
+						}
+						else if(paramMessageScreen.equals("MESSAGE_ONE_PER_USER"))
+						{
+							form.setMessageOneSubmission(body);
+						}
+						else if(paramMessageScreen.equals("MESSAGE_THANK_YOU"))
+						{
+							form.setMessageThankYou(body);
+						}
+					}
+					formDAO.updateForm(form);
+				}
+			}
 		}
 		
 		/*
@@ -421,6 +451,19 @@ public class SurveyController extends HttpServlet
 			{
 				xslScreen = "analytics.xsl";
 			}
+			else if(paramScreen.equals("MESSAGES"))
+			{
+				xslScreen = "messages.xsl";
+			}
+			else if(paramScreen.equals("EDIT_MESSAGE"))
+			{
+				if(parameterMap.get("MESSAGE_NAME") != null)
+				{
+					String messageName = parameterMap.get("MESSAGE_NAME")[0];
+					environment.setScreenName(messageName);
+				}
+				xslScreen = "message_edit.xsl";
+			}
 			else
 			{
 				xslScreen = "general.xsl";
@@ -441,7 +484,6 @@ public class SurveyController extends HttpServlet
 			}
 		}
 
-		Environment environment = new Environment();
 		environment.setComponentId(1);
 		environment.setServerName(getBaseUrl(request));
 		data.setEnvironment(environment);
