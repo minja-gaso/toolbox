@@ -185,7 +185,7 @@ public class SurveyController extends HttpServlet
 					message.setLabel("The pretty URL is already in use.  Please choose a unique one.");
 					data.getMessage().add(message);
 				}
-				else if(parameterMap.get("FORM_PRETTY_URL")[0].trim().equals(""))
+				else if(parameterMap.get("FORM_PRETTY_URL") != null && parameterMap.get("FORM_PRETTY_URL")[0].trim().equals(""))
 				{
 					Message message = new Message();
 					message.setType("error");
@@ -294,7 +294,7 @@ public class SurveyController extends HttpServlet
 				questionDAO.updateQuestion(question);
 				questionDAO.updateQuestion(secondaryQuestion);
 			}
-			else if(parameterMap.get("ANSWER_ADD") != null && paramAction.equals("SAVE_ANSWERS"))
+			else if(parameterMap.get("ANSWER_ADD") != null && paramAction.equals("ADD_ANSWERS"))
 			{
 				/*
 				 * process filter
@@ -331,6 +331,11 @@ public class SurveyController extends HttpServlet
 				message.setType("success");
 				message.setLabel("The question and answer(s) have been been saved.");
 				data.getMessage().add(message);
+			}
+			else if(paramAction.equals("DELETE_ANSWER"))
+			{
+				long answerID = Long.parseLong(parameterMap.get("ANSWER_ID")[0]);
+				answerDAO.deleteAnswer(answerID);
 			}
 		}
 		
