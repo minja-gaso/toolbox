@@ -1,10 +1,18 @@
 package org.sw.marketing.servlet.params;
 
-import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.postgresql.jdbc2.optional.SimpleDataSource;
 import org.sw.marketing.dao.DAOFactory;
 import org.sw.marketing.dao.form.FormDAO;
 import org.sw.marketing.data.form.Data.Form;
+import org.sw.marketing.util.DateToXmlGregorianCalendar;
 
 public class SurveyParameters
 {
@@ -33,6 +41,38 @@ public class SurveyParameters
 		if(parameterMap.get("FORM_SKIN_URL") != null)
 		{
 			form.setSkinUrl(parameterMap.get("FORM_SKIN_URL")[0]);
+		}
+		if(parameterMap.get("FORM_START_DATE") != null)
+		{
+			String startDateStr = parameterMap.get("FORM_START_DATE")[0];
+			DateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+			Date startDate;
+			try
+			{
+				startDate = format.parse(startDateStr);
+				XMLGregorianCalendar startDateCal = DateToXmlGregorianCalendar.convert(startDate, false);
+				form.setStartDate(startDateCal);
+			}
+			catch (ParseException e)
+			{
+				form.setStartDate(form.getStartDate());
+			}
+		}
+		if(parameterMap.get("FORM_END_DATE") != null)
+		{
+			String endDateStr = parameterMap.get("FORM_END_DATE")[0];
+			DateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+			Date endDate;
+			try
+			{
+				endDate = format.parse(endDateStr);
+				XMLGregorianCalendar endDateCal = DateToXmlGregorianCalendar.convert(endDate, false);
+				form.setEndDate(endDateCal);
+			}
+			catch (ParseException e)
+			{
+				form.setEndDate(form.getStartDate());
+			}
 		}
 		if(parameterMap.get("FORM_SKIN_SELECTOR") != null)
 		{
