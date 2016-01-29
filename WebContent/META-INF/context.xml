@@ -8,4 +8,5 @@
   <Parameter name="assetPath" value="C:\\development\\assets\\" />
   <Parameter name="assetXslPath" value="C:\\development\\assets\\xsl\\toolbox\\" />
   <Parameter name="assetXslFormsPath" value="C:\\development\\assets\\xsl\\toolbox\\forms\\" />
+  <Parameter name="assetXslFormsUrl" value="http://localhost:8080/xsl/toolbox/forms/" />
 </Context>

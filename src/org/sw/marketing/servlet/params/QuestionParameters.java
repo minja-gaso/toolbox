@@ -15,6 +15,10 @@ public class QuestionParameters
 		{
 			question.setType(parameterMap.get("QUESTION_TYPE")[0]);
 		}
+		if(parameterMap.get("QUESTION_HEADER") != null)
+		{
+			question.setHeader(parameterMap.get("QUESTION_HEADER")[0]);
+		}
 		if(parameterMap.get("QUESTION_LABEL") != null)
 		{
 			question.setLabel(parameterMap.get("QUESTION_LABEL")[0]);
