@@ -438,15 +438,15 @@ public class SelfAssessmentController extends HttpServlet
 				
 			if(paramScreen.equals("GENERAL"))
 			{
-				xslScreen = "general.xsl";
+				xslScreen = "form_general.xsl";
 			}
 			else if(paramScreen.equals("QUESTIONS_AND_ANSWERS"))
 			{
-				xslScreen = "questions_and_answers.xsl";
+				xslScreen = "question_and_answer_list.xsl";
 			}			
 			else if(paramScreen.equals("ANSWERS"))
 			{
-				xslScreen = "answers.xsl";
+				xslScreen = "answer_list.xsl";
 			}		
 			else if(paramScreen.equals("SCORES"))
 			{				
@@ -455,7 +455,7 @@ public class SelfAssessmentController extends HttpServlet
 				{
 					data.getScore().addAll(scores);
 				}
-				xslScreen = "scores.xsl";
+				xslScreen = "score_list.xsl";
 			}	
 			else if(paramScreen.equals("EDIT_SCORE"))
 			{	
@@ -469,15 +469,15 @@ public class SelfAssessmentController extends HttpServlet
 			}
 			else if(paramScreen.equals("REPORTS"))
 			{
-				xslScreen = "reports.xsl";
+				xslScreen = "form_reports.xsl";
 			}
 			else if(paramScreen.equals("ANALYTICS"))
 			{
-				xslScreen = "analytics.xsl";
+				xslScreen = "form_analytics.xsl";
 			}
 			else
 			{
-				xslScreen = "general.xsl";
+				xslScreen = "form_general.xsl";
 			}
 			
 			if(form != null)
@@ -500,7 +500,7 @@ public class SelfAssessmentController extends HttpServlet
 		else
 		{
 			formList = formDAO.getFormsSelfAssessment(data);
-			xslScreen = "list.xsl";
+			xslScreen = "form_list.xsl";
 			if(formList != null)
 			{
 				data.getForm().addAll(formList);

@@ -384,7 +384,7 @@ public class SurveyController extends HttpServlet
 				
 			if(paramScreen.equals("GENERAL"))
 			{
-				xslScreen = "general.xsl";
+				xslScreen = "form_general.xsl";
 			}
 			else if(paramScreen.equals("QUESTION_LIST"))
 			{
@@ -407,7 +407,7 @@ public class SurveyController extends HttpServlet
 					question.setType("textarea");
 				}
 				questionDAO.updateQuestion(question);
-				xslScreen = "question_type_standard.xsl";
+				xslScreen = "question_text.xsl";
 				if(question != null)
 				{
 					form.getQuestion().add(question);
@@ -438,7 +438,7 @@ public class SurveyController extends HttpServlet
 					question.getPossibleAnswer().addAll(possibleAnswerList);
 				}
 				
-				xslScreen = "question_type_multiple_choice.xsl";
+				xslScreen = "question_multiple_choice.xsl";
 				if(question != null)
 				{
 					form.getQuestion().add(question);
@@ -446,15 +446,15 @@ public class SurveyController extends HttpServlet
 			}
 			else if(paramScreen.equals("REPORTS"))
 			{
-				xslScreen = "reports.xsl";
+				xslScreen = "form_reports.xsl";
 			}
 			else if(paramScreen.equals("ANALYTICS"))
 			{
-				xslScreen = "analytics.xsl";
+				xslScreen = "form_analytics.xsl";
 			}
 			else if(paramScreen.equals("MESSAGES"))
 			{
-				xslScreen = "messages.xsl";
+				xslScreen = "message_list.xsl";
 			}
 			else if(paramScreen.equals("EDIT_MESSAGE"))
 			{
@@ -467,7 +467,7 @@ public class SurveyController extends HttpServlet
 			}
 			else
 			{
-				xslScreen = "general.xsl";
+				xslScreen = "form_general.xsl";
 			}
 			
 			if(form != null)
@@ -478,7 +478,7 @@ public class SurveyController extends HttpServlet
 		else
 		{
 			formList = formDAO.getForms(data);
-			xslScreen = "list.xsl";
+			xslScreen = "form_list.xsl";
 			if(formList != null)
 			{
 				data.getForm().addAll(formList);
