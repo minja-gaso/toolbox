@@ -67,6 +67,16 @@ public class FrontController extends HttpServlet
 
 				request.getRequestDispatcher("/selfassessment").forward(request, response);
 			}
+			else if(componentId == 3)
+			{
+
+				request.getRequestDispatcher("/calendarAdmin").forward(request, response);
+			}
+			else if(componentId == 4)
+			{
+
+				request.getRequestDispatcher("/calendarContent").forward(request, response);
+			}
 		}
 	}
 
