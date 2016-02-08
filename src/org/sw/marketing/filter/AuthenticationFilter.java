@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.sw.marketing.dao.DAOFactory;
-import org.sw.marketing.dao.user.UserDAO;
+import org.sw.marketing.dao.form.user.UserDAO;
 import org.sw.marketing.data.form.Data.User;
 
 /**

@@ -54,7 +54,7 @@ public class FrontController extends HttpServlet
 		}
 		if(paramComponentId == null)
 		{
-			request.getRequestDispatcher("/survey").forward(request, response);
+			request.getRequestDispatcher("/calendarAdmin").forward(request, response);
 		}
 		else
 		{

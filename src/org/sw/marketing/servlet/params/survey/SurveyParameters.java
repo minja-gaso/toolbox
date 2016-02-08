@@ -1,4 +1,4 @@
-package org.sw.marketing.servlet.params;
+package org.sw.marketing.servlet.params.survey;
 
 import java.text.DateFormat;
 import java.text.ParseException;
