@@ -11,4 +11,6 @@
   <Parameter name="assetXslFormsUrl" value="http://localhost:8080/xsl/toolbox/forms/" />
   <Parameter name="assetXslCalendarsPath" value="C:\\development\\assets\\xsl\\toolbox\\calendars\\" />
   <Parameter name="assetXslCalendarsUrl" value="http://localhost:8080/xsl/toolbox/calendars/" />
+  <Parameter name="assetXslCalendarsContentPath" value="C:\\development\\assets\\xsl\\toolbox\\calendars\\manage\\" />
+  <Parameter name="assetXslCalendarsContentUrl" value="http://localhost:8080/xsl/toolbox/calendars/manage/" />
 </Context>
