@@ -155,9 +155,9 @@ public class CalendarAdminController extends HttpServlet
 				calendar = calendarDAO.getCalendar(calendarID);
 			}
 				
-			if(paramScreen.equals("GENERAL"))
+			if(paramScreen.equals("ROLES"))
 			{
-				xslScreen = "calendar_general.xsl";
+				xslScreen = "calendar_roles.xsl";
 			}
 			else
 			{
