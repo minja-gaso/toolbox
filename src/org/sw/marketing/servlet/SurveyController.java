@@ -2,7 +2,6 @@ package org.sw.marketing.servlet;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
 
 import javax.servlet.ServletException;
@@ -16,8 +15,6 @@ import org.sw.marketing.dao.DAOFactory;
 import org.sw.marketing.dao.form.FormDAO;
 import org.sw.marketing.dao.form.answer.AnswerDAO;
 import org.sw.marketing.dao.form.question.QuestionDAO;
-import org.sw.marketing.dao.form.submission.SubmissionAnswerDAO;
-import org.sw.marketing.dao.form.submission.SubmissionDAO;
 import org.sw.marketing.dao.form.user.UserDAO;
 import org.sw.marketing.data.form.Data;
 import org.sw.marketing.data.form.Data.Environment;
@@ -25,8 +22,6 @@ import org.sw.marketing.data.form.Data.Form;
 import org.sw.marketing.data.form.Data.Form.Question;
 import org.sw.marketing.data.form.Data.Form.Question.PossibleAnswer;
 import org.sw.marketing.data.form.Data.Message;
-import org.sw.marketing.data.form.Data.Submission;
-import org.sw.marketing.data.form.Data.Submission.Answer;
 import org.sw.marketing.servlet.params.survey.QuestionParameters;
 import org.sw.marketing.servlet.params.survey.SurveyParameters;
 import org.sw.marketing.transformation.TransformerHelper;

@@ -1,11 +1,7 @@
 package org.sw.marketing.servlet.report.summary;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 
 import javax.servlet.ServletException;

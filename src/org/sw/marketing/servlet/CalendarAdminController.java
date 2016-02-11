@@ -2,8 +2,6 @@ package org.sw.marketing.servlet;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,14 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.sw.marketing.dao.calendar.DAOFactory;
+import org.sw.marketing.dao.calendar.role.CalendarRoleDAO;
 import org.sw.marketing.dao.calendar.CalendarDAO;
 import org.sw.marketing.dao.calendar.user.UserDAO;
 import org.sw.marketing.data.calendar.*;
 import org.sw.marketing.data.calendar.Data.*;
+import org.sw.marketing.data.calendar.Data.Calendar.Role;
 import org.sw.marketing.data.calendar.Data.Message;
+import org.sw.marketing.data.calendar.Data.User;
 import org.sw.marketing.servlet.params.calendar.CalendarParameters;
-import org.sw.marketing.servlet.params.survey.QuestionParameters;
-import org.sw.marketing.servlet.params.survey.SurveyParameters;
 import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 
@@ -34,6 +33,7 @@ public class CalendarAdminController extends HttpServlet
 	public void init()
 	{
 		innerScreenList.add("GENERAL");
+		innerScreenList.add("ROLES");
 	}
 	
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -45,6 +45,7 @@ public class CalendarAdminController extends HttpServlet
 		 */
 		UserDAO userDAO = DAOFactory.getUserDAO();
 		CalendarDAO calendarDAO = DAOFactory.getCalendarDAO();
+		CalendarRoleDAO roleDAO = DAOFactory.getCalendarRoleDAO();
 
 		/*
 		 * Data Initialization
@@ -53,7 +54,22 @@ public class CalendarAdminController extends HttpServlet
 		Environment environment = new Environment();
 		java.util.List<Calendar> calendars = null;
 		Calendar calendar = null;
-		User user = userDAO.getUserByEmail("gaso@illinois.edu");
+		User user = null;
+		
+		/*
+		 * Get user session information
+		 */
+		if(httpSession.getAttribute("EMAIL_ADDRESS") != null)
+		{
+			String email = (String) httpSession.getAttribute("EMAIL_ADDRESS");
+			user = userDAO.getUserByEmail(email);
+			if(user == null)
+			{
+				response.getWriter().println("Email not recognized.");
+				return;
+			}
+			data.setUser(user);
+		}
 		
 		/*
 		 * Add parameters to HashMap
@@ -140,6 +156,36 @@ public class CalendarAdminController extends HttpServlet
 					
 					calendarID = 0;
 				}
+				else if(paramAction.equals("ADD_ROLE"))
+				{
+					String paramRoleEmail = parameterMap.get("CALENDAR_ROLE_EMAIL")[0];
+					String paramRoleType = parameterMap.get("CALENDAR_ROLE_TYPE")[0];
+					
+					Role role = new Role();
+					role.setEmail(paramRoleEmail);
+					role.setType(paramRoleType);
+					role.setFkCalendarId(calendarID);
+					
+					Role uniqueRole = roleDAO.getUniqueRole(role);
+					if(uniqueRole == null)
+					{
+						roleDAO.insert(role);
+					}
+					else
+					{
+						Message message = new Message();
+						message.setType("error");
+						message.setLabel("The role/email combination already exists.");
+						data.getMessage().add(message);
+					}
+				}
+				else if(paramAction.equals("DELETE_ROLE"))
+				{
+					String paramRoleID = parameterMap.get("ROLE_ID")[0];
+					long roleID = Long.parseLong(paramRoleID);
+					
+					roleDAO.delete(roleID);
+				}
 			}
 		}
 		
@@ -157,6 +203,12 @@ public class CalendarAdminController extends HttpServlet
 				
 			if(paramScreen.equals("ROLES"))
 			{
+				java.util.List<Role> roles = roleDAO.getRoles(calendarID);
+				if(roles != null)
+				{
+					calendar.getRole().addAll(roles);
+				}
+				
 				xslScreen = "calendar_roles.xsl";
 			}
 			else
@@ -173,7 +225,7 @@ public class CalendarAdminController extends HttpServlet
 		{
 			xslScreen = "calendar_list.xsl";
 			
-			calendars = calendarDAO.getCalendars();
+			calendars = calendarDAO.getCalendars(user);
 			if(calendars != null)
 			{
 				data.getCalendar().addAll(calendars);

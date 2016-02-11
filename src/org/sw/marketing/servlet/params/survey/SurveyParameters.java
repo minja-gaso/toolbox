@@ -8,9 +8,6 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.postgresql.jdbc2.optional.SimpleDataSource;
-import org.sw.marketing.dao.DAOFactory;
-import org.sw.marketing.dao.form.FormDAO;
 import org.sw.marketing.data.form.Data.Form;
 import org.sw.marketing.util.DateToXmlGregorianCalendar;
 

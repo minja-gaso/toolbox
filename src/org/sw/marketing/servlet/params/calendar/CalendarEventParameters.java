@@ -162,6 +162,12 @@ public class CalendarEventParameters
 		{
 			event.setCost(parameterMap.get("EVENT_COST")[0]);
 		}
+		if(parameterMap.get("EVENT_CATEGORY") != null && parameterMap.get("EVENT_CATEGORY").length > 0)
+		{
+			long categoryID = Long.parseLong(parameterMap.get("EVENT_CATEGORY")[0]);
+			event.setCategoryId(categoryID);
+		}
+		System.out.println("****" + event.getCategoryId());
 
 		return event;
 	}

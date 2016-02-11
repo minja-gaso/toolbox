@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
 import org.scribe.model.Token;
-import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
 @WebServlet("/signin")

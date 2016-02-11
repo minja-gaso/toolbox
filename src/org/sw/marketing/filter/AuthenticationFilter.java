@@ -24,12 +24,12 @@ public class AuthenticationFilter implements Filter
 {
 	public AuthenticationFilter()
 	{
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public void destroy()
 	{
-		// TODO Auto-generated method stub
+		
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
@@ -50,7 +50,7 @@ public class AuthenticationFilter implements Filter
 			
 			if(user == null)
 			{
-				httpResponse.sendRedirect("/toolbox/signin2");
+				httpResponse.sendRedirect("/toolbox/signin");
 				return;
 			}
 			else
@@ -64,13 +64,14 @@ public class AuthenticationFilter implements Filter
 			}
 		}
 		else
-		{
-			UserDAO userDAO = DAOFactory.getUserDAO();
-			user = userDAO.getUserByEmail("gaso@illinois.edu");
+		{			
+			String email = "mgaso@sw.org";
+			if(httpRequest.getParameter("email") != null)
+			{
+				email = httpRequest.getParameter("email");
+			}
+			httpRequest.getSession().setAttribute("EMAIL_ADDRESS", email);
 		}
-		
-		
-		
 		
 		httpSession.setAttribute("user", user);
 		chain.doFilter(request, response);
@@ -78,7 +79,7 @@ public class AuthenticationFilter implements Filter
 
 	public void init(FilterConfig fConfig) throws ServletException
 	{
-		// TODO Auto-generated method stub
+		
 	}
 
 }
