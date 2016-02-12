@@ -167,7 +167,6 @@ public class CalendarEventParameters
 			long categoryID = Long.parseLong(parameterMap.get("EVENT_CATEGORY")[0]);
 			event.setCategoryId(categoryID);
 		}
-		System.out.println("****" + event.getCategoryId());
 
 		return event;
 	}
