@@ -2,13 +2,21 @@ package org.sw.marketing.servlet;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.util.GregorianCalendar;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.joda.time.DateTime;
 import org.sw.marketing.dao.calendar.CalendarDAO;
 import org.sw.marketing.dao.calendar.DAOFactory;
 import org.sw.marketing.dao.calendar.category.CalendarCategoryDAO;
@@ -19,12 +27,15 @@ import org.sw.marketing.data.calendar.Data;
 import org.sw.marketing.data.calendar.Data.Calendar;
 import org.sw.marketing.data.calendar.Data.Calendar.Category;
 import org.sw.marketing.data.calendar.Data.Calendar.Event;
+import org.sw.marketing.data.calendar.Data.Calendar.Event.EventRecurrence;
 import org.sw.marketing.data.calendar.Data.Calendar.Event.Tag;
 import org.sw.marketing.data.calendar.Data.Environment;
 import org.sw.marketing.data.calendar.Data.User;
 import org.sw.marketing.servlet.params.calendar.CalendarEventParameters;
 import org.sw.marketing.transformation.TransformerHelper;
+import org.sw.marketing.util.DateToXmlGregorianCalendar;
 import org.sw.marketing.util.ReadFile;
+import org.sw.marketing.util.Recursion;
 
 @WebServlet("/calendarContent")
 public class CalendarContentController extends HttpServlet
@@ -175,6 +186,7 @@ public class CalendarContentController extends HttpServlet
 				if(paramAction.equals("SAVE_EVENT"))
 				{
 					event = CalendarEventParameters.process(request, event);
+					event.setParentId(0);
 					eventDAO.updateCalendarEvent(event);
 					
 					String[] eventTags = parameterMap.get("EVENT_TAGS");
@@ -187,6 +199,9 @@ public class CalendarContentController extends HttpServlet
 							eventTagDAO.addTag(eventTag, eventID);
 						}
 					}
+					
+					copyEvents(event.getId());
+					eventDAO.updateCalendarRecurringEvent(event);
 				}
 				else if(paramAction.equals("DELETE_EVENT_IMAGE"))
 				{
@@ -229,7 +244,7 @@ public class CalendarContentController extends HttpServlet
 			if(event != null)
 			{
 				if(paramScreen.equals("EVENT_RECURRENCE"))
-				{
+				{					
 					xslScreen = "calendar_event_recurrence.xsl";
 				}
 				else if(paramScreen.equals("EVENT_IMAGE_UPLOAD"))
@@ -310,8 +325,123 @@ public class CalendarContentController extends HttpServlet
 		skinHtmlStr = skinHtmlStr.replace("{NAME}", "Calendar Content");
 		skinHtmlStr = skinHtmlStr.replace("{CONTENT}", htmlStr);
 		
-		System.out.println(xmlStr);
+//		System.out.println(xmlStr);
 		response.getWriter().print(skinHtmlStr);
+	}
+	
+	private void copyEvents(long eventID)
+	{
+		CalendarEventDAO eventDAO = DAOFactory.getCalendarEventDAO();
+		Event event = eventDAO.getCalendarEvent(eventID);
+		
+		EventRecurrence recurrence = event.getEventRecurrence();
+		if(recurrence.isRecurring())
+		{						
+			Recursion recursion = new Recursion();
+			recursion.setStartDate(LocalDate.parse(event.getStartDate().toString().substring(0, 10)));
+			recursion.setCurrentDate(recursion.getStartDate());
+			recursion.setEndDate(LocalDate.parse(event.getEndDate().toString().substring(0, 10)));
+			if(recurrence.getType().equals("interval"))
+			{
+				recursion.setLimitEnabled(true);
+				recursion.setEndDate(LocalDate.parse("2099-12-31"));
+			}
+			else
+			{
+				recursion.setLimitEnabled(false);
+			}
+			recursion.setLimit(recurrence.getLimit());
+			recursion.setInterval(recurrence.getInterval());
+			
+			java.util.List<String> dates = null;
+			boolean recurringMonthly = recurrence.isRecurringMonthly();
+			if(recurringMonthly)
+			{
+				dates = recursion.printMonthly(recursion);
+			}
+			else
+			{
+				recursion.setStartDate(recursion.getStartDate().plusDays(1));
+				java.util.List<String> recursions = new java.util.ArrayList<String>();
+				if(recurrence.isMonday())
+				{
+					recursions.add("MONDAY");
+				}
+				if(recurrence.isTuesday())
+				{
+					recursions.add("TUESDAY");
+				}
+				if(recurrence.isWednesday())
+				{
+					recursions.add("WEDNESDAY");
+				}
+				if(recurrence.isThursday())
+				{
+					recursions.add("THURSDAY");
+				}
+				if(recurrence.isFriday())
+				{
+					recursions.add("FRIDAY");
+				}
+				if(recurrence.isSaturday())
+				{
+					recursions.add("SATURDAY");
+				}
+				if(recurrence.isSunday())
+				{
+					recursions.add("SUNDAY");
+				}
+				recursion.setRecursions(recursions);
+				
+				dates = recursion.printWeekly(recursion);
+			}
+			
+			if(dates != null)
+			{
+				processDates(dates, event);
+			}
+		}
+	}
+	
+	private static void processDates(java.util.List<String> dates, Event event)
+	{
+		CalendarEventDAO eventDAO = DAOFactory.getCalendarEventDAO();
+		
+		eventDAO.deleteRecurring(event.getId());
+		
+		long parentId = event.getId();
+		
+		java.util.Iterator<String> datesIt = dates.iterator();
+		while(datesIt.hasNext())
+		{
+			String date = datesIt.next();
+
+			Event recurringEvent = event;
+			java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date recurringEventDate;
+			try
+			{
+				recurringEventDate = dateFormat.parse(date);
+				GregorianCalendar gregorianCalendar = new GregorianCalendar();
+				gregorianCalendar.setTime(recurringEventDate);
+				XMLGregorianCalendar xmlDate = DateToXmlGregorianCalendar.convert(recurringEventDate, false);
+
+				recurringEvent.setStartDate(xmlDate);
+				recurringEvent.setEndDate(xmlDate);
+				
+				long newEventID = eventDAO.createCalendarEvent(event.getFkId());
+				Event newEvent = eventDAO.getCalendarEvent(newEventID);
+				newEvent = recurringEvent;
+				newEvent.setId(newEventID);
+				newEvent.setParentId(parentId);
+				eventDAO.updateCalendarEvent(recurringEvent);
+			}
+			catch (ParseException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		eventDAO.deleteFirstRecurring(event.getParentId());
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException

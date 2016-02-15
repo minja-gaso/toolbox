@@ -11,6 +11,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.sw.marketing.data.calendar.Data.Calendar.Event;
+import org.sw.marketing.data.calendar.Data.Calendar.Event.EventRecurrence;
 
 public class CalendarEventParameters
 {
@@ -21,6 +22,7 @@ public class CalendarEventParameters
 
 		DateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
 		DateFormat dateFormatter = new SimpleDateFormat("MM-dd-yyyy");
+		EventRecurrence recurrence = event.getEventRecurrence();
 		
 		if(parameterMap.get("EVENT_START_DATE") != null)
 		{
@@ -166,6 +168,62 @@ public class CalendarEventParameters
 		{
 			long categoryID = Long.parseLong(parameterMap.get("EVENT_CATEGORY")[0]);
 			event.setCategoryId(categoryID);
+		}
+		if(parameterMap.get("EVENT_RECUR") != null)
+		{
+			recurrence.setRecurring(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR")[0]));
+		}
+		if(parameterMap.get("EVENT_RECUR_MONTHLY") != null)
+		{
+			recurrence.setRecurringMonthly(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR_MONTHLY")[0]));
+		}
+		if(parameterMap.get("EVENT_RECUR_TYPE") != null)
+		{
+			recurrence.setType(parameterMap.get("EVENT_RECUR_TYPE")[0]);
+		}
+		if(parameterMap.get("EVENT_RECUR_LIMIT") != null)
+		{
+			recurrence.setLimit(Integer.parseInt(parameterMap.get("EVENT_RECUR_LIMIT")[0]));
+		}
+		if(parameterMap.get("EVENT_RECUR_INTERVAL") != null)
+		{
+			recurrence.setInterval(Integer.parseInt(parameterMap.get("EVENT_RECUR_INTERVAL")[0]));
+		}
+		if(parameterMap.get("EVENT_RECUR_BY") != null)
+		{
+			recurrence.setBy(parameterMap.get("EVENT_RECUR_BY")[0]);
+		}
+		
+		/*
+		 * checkboxes for days of week
+		 */
+		if(parameterMap.get("EVENT_RECUR_MONDAY") != null)
+		{
+			recurrence.setMonday(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR_MONDAY")[0]));
+		}
+		if(parameterMap.get("EVENT_RECUR_TUESDAY") != null)
+		{
+			recurrence.setTuesday(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR_TUESDAY")[0]));
+		}
+		if(parameterMap.get("EVENT_RECUR_WEDNESDAY") != null)
+		{
+			recurrence.setWednesday(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR_WEDNESDAY")[0]));
+		}		
+		if(parameterMap.get("EVENT_RECUR_THURSDAY") != null)
+		{
+			recurrence.setThursday(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR_THURSDAY")[0]));
+		}		
+		if(parameterMap.get("EVENT_RECUR_FRIDAY") != null)
+		{
+			recurrence.setFriday(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR_FRIDAY")[0]));
+		}		
+		if(parameterMap.get("EVENT_RECUR_SATURDAY") != null)
+		{
+			recurrence.setSaturday(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR_SATURDAY")[0]));
+		}
+		if(parameterMap.get("EVENT_RECUR_SUNDAY") != null)
+		{
+			recurrence.setSunday(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR_SUNDAY")[0]));
 		}
 
 		return event;
