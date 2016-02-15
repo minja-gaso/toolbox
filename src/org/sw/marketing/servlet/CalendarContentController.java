@@ -188,6 +188,29 @@ public class CalendarContentController extends HttpServlet
 						}
 					}
 				}
+				else if(paramAction.equals("DELETE_EVENT_IMAGE"))
+				{
+					String uploadPath = getServletContext().getInitParameter("calendarUploadsPath");					
+					String calendarDirectoryPath = uploadPath + request.getParameter("CALENDAR_ID");
+					String eventDirectoryPath = calendarDirectoryPath + java.io.File.separator + request.getParameter("EVENT_ID");
+					String fileUploadPath = eventDirectoryPath + java.io.File.separator + event.getFileName();
+					
+					java.io.File uploadedFile = new java.io.File(fileUploadPath);
+					if(uploadedFile.exists())
+					{
+						uploadedFile.delete();
+						
+						java.io.File eventDirectory = new java.io.File(eventDirectoryPath);
+						if(eventDirectory.exists())
+						{
+							eventDirectory.delete();
+						}
+					}
+					
+					event.setFileName("");
+					event.setFileDescription("");
+					eventDAO.updateCalendarEvent(event);
+				}
 			}
 		}
 		
