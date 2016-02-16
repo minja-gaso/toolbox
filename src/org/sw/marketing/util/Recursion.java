@@ -187,7 +187,7 @@ public class Recursion
 					catch(DateTimeException e)
 					{}
 				}
-				System.out.print(currentDate);
+//				System.out.print(currentDate);
 				try
 				{
 					currentDate = currentDate.plusMonths(interval).withDayOfMonth(dayOfMonth);
@@ -196,7 +196,7 @@ public class Recursion
 				{
 					currentDate = currentDate.plusMonths(interval + 1);
 				}
-				System.out.println("\t" + currentDate);
+//				System.out.println("\t" + currentDate);
 			}
 		}
 		else

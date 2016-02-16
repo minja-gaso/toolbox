@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -30,6 +32,7 @@ import org.sw.marketing.data.calendar.Data.Calendar.Event;
 import org.sw.marketing.data.calendar.Data.Calendar.Event.EventRecurrence;
 import org.sw.marketing.data.calendar.Data.Calendar.Event.Tag;
 import org.sw.marketing.data.calendar.Data.Environment;
+import org.sw.marketing.data.calendar.Data.Message;
 import org.sw.marketing.data.calendar.Data.User;
 import org.sw.marketing.servlet.params.calendar.CalendarEventParameters;
 import org.sw.marketing.transformation.TransformerHelper;
@@ -75,6 +78,7 @@ public class CalendarContentController extends HttpServlet
 		Calendar calendar = null;
 		Event event = null;
 		User user = null;
+		java.util.List<Message> messages = new java.util.ArrayList<Message>();
 		
 		/*
 		 * Get user session information
@@ -186,22 +190,45 @@ public class CalendarContentController extends HttpServlet
 				if(paramAction.equals("SAVE_EVENT"))
 				{
 					event = CalendarEventParameters.process(request, event);
-					event.setParentId(0);
-					eventDAO.updateCalendarEvent(event);
 					
-					String[] eventTags = parameterMap.get("EVENT_TAGS");
-					if(eventTags != null && eventTags.length > 0)
-					{
-						eventTagDAO.deleteTags(eventID);
-						for(int index = 0; index < eventTags.length; index++)
+					String paramScreen = parameterMap.get("SCREEN")[0];
+					messages = eventSaveValidation(event);
+					
+					if(messages.size() == 0)
+					{					
+						eventDAO.updateCalendarEvent(event);	
+						
+						String[] eventTags = parameterMap.get("EVENT_TAGS");
+						if(eventTags != null && eventTags.length > 0)
 						{
-							String eventTag = eventTags[index].trim();
-							eventTagDAO.addTag(eventTag, eventID);
+							eventTagDAO.deleteTags(eventID);
+							for(int index = 0; index < eventTags.length; index++)
+							{
+								String eventTag = eventTags[index].trim();
+								eventTagDAO.addTag(eventTag, eventID);
+							}
 						}
+						
+						copyEvents(event);
+						if(event.getEventRecurrence().isVisibleOnListScreen() == false)
+						{
+							eventDAO.updateCalendarRecurringEventVisibility(event);
+						}
+						
+						Message message = new Message();
+						message.setType("success");
+						message.setLabel("Event saved.");
+						messages.add(message);
 					}
-					
-					copyEvents(event.getId());
-					eventDAO.updateCalendarRecurringEvent(event);
+				}
+				else if(paramAction.equals("DELETE_EVENT"))
+				{
+					if(event.getParentId() == 0)
+					{
+						eventDAO.deleteRecurring(eventID);
+					}
+					eventDAO.delete(eventID);
+					event = null;
 				}
 				else if(paramAction.equals("DELETE_EVENT_IMAGE"))
 				{
@@ -245,6 +272,14 @@ public class CalendarContentController extends HttpServlet
 			{
 				if(paramScreen.equals("EVENT_RECURRENCE"))
 				{					
+					if(event.getStartDate() != event.getEndDate())
+					{
+						Message message = new Message();
+						message.setType("error");
+						message.setLabel("The original event can have different start and end dates.  However, all recurring events will have the event start and end on same day.");
+						messages.add(message);
+					}
+					
 					xslScreen = "calendar_event_recurrence.xsl";
 				}
 				else if(paramScreen.equals("EVENT_IMAGE_UPLOAD"))
@@ -264,7 +299,7 @@ public class CalendarContentController extends HttpServlet
 			}
 			else if(paramScreen.equals("EVENTS"))
 			{
-				java.util.List<Event> events = eventDAO.getCalendarEvents(calendarID);
+				java.util.List<Event> events = eventDAO.getCalendarEventsToolbox(calendarID);
 				if(events != null)
 				{
 					calendar.getEvent().addAll(events);
@@ -308,6 +343,8 @@ public class CalendarContentController extends HttpServlet
 			}
 		}
 		
+		data.getMessage().addAll(messages);
+		
 		environment.setComponentId(4);
 		environment.setServerName(getBaseUrl(request));
 		data.setEnvironment(environment);
@@ -325,14 +362,70 @@ public class CalendarContentController extends HttpServlet
 		skinHtmlStr = skinHtmlStr.replace("{NAME}", "Calendar Content");
 		skinHtmlStr = skinHtmlStr.replace("{CONTENT}", htmlStr);
 		
-//		System.out.println(xmlStr);
+		System.out.println(xmlStr);
 		response.getWriter().print(skinHtmlStr);
 	}
 	
-	private void copyEvents(long eventID)
+	private java.util.List<Message> eventSaveValidation(Event event)
+	{
+		java.util.List<Message> messages = new java.util.ArrayList<Message>();
+		Message message = null;
+		
+		/*
+		 * validate title
+		 */
+		if(event.getTitle().equals(""))
+		{
+			message = new Message();
+			message.setType("error");
+			message.setLabel("Please enter a title.");
+			messages.add(message);
+		}
+		
+		/*
+		 * validate time
+		 */
+		boolean endsOnSameDay = false;
+		if(event.getStartDate().compare(event.getEndDate()) == DatatypeConstants.EQUAL)
+		{
+			endsOnSameDay = true;
+		}
+		if(endsOnSameDay && event.getStartTime().compare(event.getEndTime()) == DatatypeConstants.GREATER)
+		{
+			message = new Message();
+			message.setType("error");
+			message.setLabel("The end time must be greater than the start time.");
+			messages.add(message);
+		}
+		
+		/*
+		 * validate location
+		 */
+		if(event.getLocation().equals(""))
+		{
+			message = new Message();
+			message.setType("error");
+			message.setLabel("Please enter a location.");
+			messages.add(message);
+		}
+		
+		/*
+		 * validate description
+		 */
+		if(event.getDescription().equals(""))
+		{
+			message = new Message();
+			message.setType("error");
+			message.setLabel("Please enter a description.");
+			messages.add(message);
+		}
+		
+		return messages;
+	}
+
+	private void copyEvents(Event event)
 	{
 		CalendarEventDAO eventDAO = DAOFactory.getCalendarEventDAO();
-		Event event = eventDAO.getCalendarEvent(eventID);
 		
 		EventRecurrence recurrence = event.getEventRecurrence();
 		if(recurrence.isRecurring())
@@ -438,7 +531,6 @@ public class CalendarContentController extends HttpServlet
 				e.printStackTrace();
 			}
 		}
-		eventDAO.deleteFirstRecurring(event.getParentId());
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException

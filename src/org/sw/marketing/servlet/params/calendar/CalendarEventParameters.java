@@ -23,7 +23,11 @@ public class CalendarEventParameters
 		DateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
 		DateFormat dateFormatter = new SimpleDateFormat("MM-dd-yyyy");
 		EventRecurrence recurrence = event.getEventRecurrence();
-		
+
+		if(parameterMap.get("EVENT_PUBLISHED") != null)
+		{
+			event.setPublished(Boolean.parseBoolean(parameterMap.get("EVENT_PUBLISHED")[0]));
+		}
 		if(parameterMap.get("EVENT_START_DATE") != null)
 		{
 			String paramStartDate = parameterMap.get("EVENT_START_DATE")[0];			
@@ -173,6 +177,10 @@ public class CalendarEventParameters
 		{
 			recurrence.setRecurring(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR")[0]));
 		}
+		if(parameterMap.get("EVENT_RECUR_VISIBLE") != null)
+		{
+			recurrence.setVisibleOnListScreen(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR_VISIBLE")[0]));
+		}		
 		if(parameterMap.get("EVENT_RECUR_MONTHLY") != null)
 		{
 			recurrence.setRecurringMonthly(Boolean.parseBoolean(parameterMap.get("EVENT_RECUR_MONTHLY")[0]));
