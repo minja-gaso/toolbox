@@ -407,17 +407,18 @@ public class CalendarContentController extends HttpServlet
 	{
 		CalendarEventDAO eventDAO = DAOFactory.getCalendarEventDAO();
 		
+		/*
+		 * delete existing recurring events
+		 */
 		eventDAO.deleteRecurring(event.getId());
 		
 		long parentId = event.getId();
+		java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");		
 		
 		java.util.Iterator<String> datesIt = dates.iterator();
 		while(datesIt.hasNext())
 		{
 			String date = datesIt.next();
-
-			Event recurringEvent = event;
-			java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
 			java.util.Date recurringEventDate;
 			try
 			{
@@ -426,15 +427,11 @@ public class CalendarContentController extends HttpServlet
 				gregorianCalendar.setTime(recurringEventDate);
 				XMLGregorianCalendar xmlDate = DateToXmlGregorianCalendar.convert(recurringEventDate, false);
 
-				recurringEvent.setStartDate(xmlDate);
-				recurringEvent.setEndDate(xmlDate);
-				
-				long newEventID = eventDAO.createCalendarEvent(event.getFkId());
-				Event newEvent = eventDAO.getCalendarEvent(newEventID);
-				newEvent = recurringEvent;
-				newEvent.setId(newEventID);
-				newEvent.setParentId(parentId);
-				eventDAO.updateCalendarEvent(recurringEvent);
+				long newId = eventDAO.copyEvent(event);
+				Event newEvent = eventDAO.getCalendarEvent(newId);
+				newEvent.setStartDate(xmlDate);
+				newEvent.setEndDate(xmlDate);
+				eventDAO.updateCalendarEvent(newEvent);
 			}
 			catch (ParseException e)
 			{

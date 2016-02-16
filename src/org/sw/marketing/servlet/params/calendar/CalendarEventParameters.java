@@ -189,9 +189,9 @@ public class CalendarEventParameters
 		{
 			recurrence.setInterval(Integer.parseInt(parameterMap.get("EVENT_RECUR_INTERVAL")[0]));
 		}
-		if(parameterMap.get("EVENT_RECUR_BY") != null)
+		if(parameterMap.get("EVENT_RECUR_INTERVAL_TYPE") != null)
 		{
-			recurrence.setBy(parameterMap.get("EVENT_RECUR_BY")[0]);
+			recurrence.setIntervalType(parameterMap.get("EVENT_RECUR_INTERVAL_TYPE")[0]);
 		}
 		
 		/*
