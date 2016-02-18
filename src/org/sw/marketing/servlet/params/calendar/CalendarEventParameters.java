@@ -124,9 +124,17 @@ public class CalendarEventParameters
 		{
 			event.setTitle(parameterMap.get("EVENT_TITLE")[0]);
 		}
+		if(parameterMap.get("EVENT_TITLE_RECURRING_LABEL") != null)
+		{
+			event.setTitleRecurringLabel(parameterMap.get("EVENT_TITLE_RECURRING_LABEL")[0]);
+		}
 		if(parameterMap.get("EVENT_DESCRIPTION") != null)
 		{
 			event.setDescription(parameterMap.get("EVENT_DESCRIPTION")[0]);
+		}
+		if(parameterMap.get("EVENT_AGENDA") != null)
+		{
+			event.setAgenda(parameterMap.get("EVENT_AGENDA")[0]);
 		}
 		if(parameterMap.get("IS_EVENT_LOCATION_OWNED") != null)
 		{

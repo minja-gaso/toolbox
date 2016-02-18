@@ -41,7 +41,13 @@ public class AuthenticationFilter implements Filter
 		
 		String baseUrl = httpRequest.getRequestURL().toString();
 		
-		if(!baseUrl.contains("localhost") && httpRequest.getParameter("admin") == null)
+
+		if(httpRequest.getParameter("email") != null)
+		{
+			String email = httpRequest.getParameter("email");
+			httpRequest.getSession().setAttribute("EMAIL_ADDRESS", email);
+		}
+		else if(!baseUrl.contains("localhost") && httpRequest.getParameter("admin") == null)
 		{
 			if(httpSession.getAttribute("user") != null)
 			{

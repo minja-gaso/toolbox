@@ -3,10 +3,8 @@ package org.sw.marketing.servlet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.ParseException;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,10 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.joda.time.DateTime;
 import org.sw.marketing.dao.calendar.CalendarDAO;
 import org.sw.marketing.dao.calendar.DAOFactory;
 import org.sw.marketing.dao.calendar.category.CalendarCategoryDAO;
@@ -191,9 +187,6 @@ public class CalendarContentController extends HttpServlet
 				{
 					event = CalendarEventParameters.process(request, event);
 					
-					String paramScreen = parameterMap.get("SCREEN")[0];
-					messages = eventSaveValidation(event);
-					
 					if(messages.size() == 0)
 					{					
 						eventDAO.updateCalendarEvent(event);	
@@ -229,6 +222,11 @@ public class CalendarContentController extends HttpServlet
 					}
 					eventDAO.delete(eventID);
 					event = null;
+					
+					Message message = new Message();
+					message.setType("success");
+					message.setLabel("The event has been deleted.");
+					messages.add(message);
 				}
 				else if(paramAction.equals("DELETE_EVENT_IMAGE"))
 				{
@@ -252,6 +250,11 @@ public class CalendarContentController extends HttpServlet
 					event.setFileName("");
 					event.setFileDescription("");
 					eventDAO.updateCalendarEvent(event);
+					
+					Message message = new Message();
+					message.setType("success");
+					message.setLabel("The event image has been deleted.");
+					messages.add(message);
 				}
 			}
 		}
@@ -272,10 +275,10 @@ public class CalendarContentController extends HttpServlet
 			{
 				if(paramScreen.equals("EVENT_RECURRENCE"))
 				{					
-					if(event.getStartDate() != event.getEndDate())
+					if(event.getStartDate().compare(event.getEndDate()) != DatatypeConstants.EQUAL)
 					{
 						Message message = new Message();
-						message.setType("error");
+						message.setType("info");
 						message.setLabel("The original event can have different start and end dates.  However, all recurring events will have the event start and end on same day.");
 						messages.add(message);
 					}
@@ -295,6 +298,13 @@ public class CalendarContentController extends HttpServlet
 					}
 					
 					xslScreen = "calendar_event.xsl";
+					
+
+					String paramAction = parameterMap.get("ACTION")[0];
+					if(paramScreen.equals("EVENT") && !paramAction.equals("CREATE_EVENT"))
+					{
+						messages = eventSaveValidation(event);
+					}
 				}
 			}
 			else if(paramScreen.equals("EVENTS"))
@@ -341,6 +351,16 @@ public class CalendarContentController extends HttpServlet
 			{
 				data.getCalendar().addAll(calendars);
 			}
+		}
+		
+		/*
+		 * file upload iframe message
+		 */
+		if(request.getSession().getAttribute("message") != null)
+		{
+			Message message = (Message) request.getSession().getAttribute("message");
+			messages.add(message);
+			request.getSession().setAttribute("message", null);
 		}
 		
 		data.getMessage().addAll(messages);

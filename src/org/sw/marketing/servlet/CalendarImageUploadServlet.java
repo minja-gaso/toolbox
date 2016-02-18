@@ -21,6 +21,7 @@ import org.sw.marketing.dao.calendar.event.CalendarEventDAO;
 import org.sw.marketing.data.calendar.Data;
 import org.sw.marketing.data.calendar.Data.Calendar;
 import org.sw.marketing.data.calendar.Data.Calendar.Event;
+import org.sw.marketing.data.calendar.Data.Message;
 import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 
@@ -68,6 +69,12 @@ public class CalendarImageUploadServlet extends HttpServlet
 			}
 			data.getCalendar().add(calendar);
 		}
+		
+		if(request.getAttribute("message") != null)
+		{
+			Message message = (Message) request.getAttribute("message");
+			data.getMessage().add(message);
+		}
 
 		/*
 		 * generate output
@@ -91,6 +98,12 @@ public class CalendarImageUploadServlet extends HttpServlet
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		java.util.List<String> validFileTypes = new java.util.ArrayList<String>();
+		validFileTypes.add("image/png");
+		validFileTypes.add("image/jpeg");
+		validFileTypes.add("image/gif");
+		validFileTypes.add("image/bmp");
+		
 		String paramCalendarID = request.getParameter("CALENDAR_ID");
 		long calendarID = 0;
 		try
@@ -145,36 +158,49 @@ public class CalendarImageUploadServlet extends HttpServlet
 						 */
 						String fieldName = item.getFieldName();
 						String fileName = FilenameUtils.getName(item.getName());
-						event.setFileName(fileName);
-						InputStream fileContent = item.getInputStream();
-						
-						String uploadPath = getServletContext().getInitParameter("calendarUploadsPath");
-						// + request.getParameter("CALENDAR_ID") + java.io.File.separator + "event" + 
-						// java.io.File.separator + request.getParameter(arg0);
-						
-						String calendarUploadPath = uploadPath + request.getParameter("CALENDAR_ID");
-						java.io.File calendarUploadPathFile = new java.io.File(calendarUploadPath);
-						if(!calendarUploadPathFile.exists())
+						String fileType = getServletContext().getMimeType(fileName);
+						if(validFileTypes.contains(fileType))
 						{
-							calendarUploadPathFile.mkdir();
+							event.setFileName(fileName);
+							InputStream fileContent = item.getInputStream();
+							
+							String uploadPath = getServletContext().getInitParameter("calendarUploadsPath");						
+							String calendarUploadPath = uploadPath + request.getParameter("CALENDAR_ID");
+							java.io.File calendarUploadPathFile = new java.io.File(calendarUploadPath);
+							if(!calendarUploadPathFile.exists())
+							{
+								calendarUploadPathFile.mkdir();
+							}
+							
+							String eventUploadPath = calendarUploadPath + java.io.File.separator + request.getParameter("EVENT_ID");
+							java.io.File eventUploadPathFile = new java.io.File(eventUploadPath);
+							if(!eventUploadPathFile.exists())
+							{
+								eventUploadPathFile.mkdir();
+							}
+							
+							String fileUploadPath = eventUploadPath + java.io.File.separator + event.getFileName();
+							java.io.File fileSave = new java.io.File(fileUploadPath);
+							try
+							{
+								item.write(fileSave);
+							}
+							catch (Exception e)
+							{
+								e.printStackTrace();
+							}
+							
+							Message message = new Message();
+							message.setType("success");
+							message.setLabel("The event image has been successfully uploaded.");
+							request.getSession().setAttribute("message", message);
 						}
-						
-						String eventUploadPath = calendarUploadPath + java.io.File.separator + request.getParameter("EVENT_ID");
-						java.io.File eventUploadPathFile = new java.io.File(eventUploadPath);
-						if(!eventUploadPathFile.exists())
+						else
 						{
-							eventUploadPathFile.mkdir();
-						}
-						
-						String fileUploadPath = eventUploadPath + java.io.File.separator + event.getFileName();
-						java.io.File fileSave = new java.io.File(fileUploadPath);
-						try
-						{
-							item.write(fileSave);
-						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
+							Message message = new Message();
+							message.setType("error");
+							message.setLabel("The file extension is not supported.  Please upload only a .gif, .jpg, .jpeg, and .png file.");
+							request.getSession().setAttribute("message", message);
 						}
 					}
 				}
