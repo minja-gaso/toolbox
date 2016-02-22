@@ -186,6 +186,8 @@ public class CalendarContentController extends HttpServlet
 				if(paramAction.equals("SAVE_EVENT"))
 				{
 					event = CalendarEventParameters.process(request, event);
+
+					messages = eventSaveValidation(event);
 					
 					if(messages.size() == 0)
 					{					
@@ -300,11 +302,11 @@ public class CalendarContentController extends HttpServlet
 					xslScreen = "calendar_event.xsl";
 					
 
-					String paramAction = parameterMap.get("ACTION")[0];
-					if(paramScreen.equals("EVENT") && !paramAction.equals("CREATE_EVENT"))
-					{
-						messages = eventSaveValidation(event);
-					}
+//					String paramAction = parameterMap.get("ACTION")[0];
+//					if(paramScreen.equals("EVENT") && !paramAction.equals("CREATE_EVENT"))
+//					{
+//						messages = eventSaveValidation(event);
+//					}
 				}
 			}
 			else if(paramScreen.equals("EVENTS"))
