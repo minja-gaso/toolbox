@@ -22,7 +22,9 @@ import org.sw.marketing.servlet.params.calendar.CalendarParameters;
 import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 
-@WebServlet("/calendarAdmin")
+import com.jcabi.w3c.ValidationResponse;
+import com.jcabi.w3c.ValidatorBuilder;
+
 public class CalendarAdminController extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -33,12 +35,18 @@ public class CalendarAdminController extends HttpServlet
 	public void init()
 	{
 		innerScreenList.add("GENERAL");
+		innerScreenList.add("CSS");
 		innerScreenList.add("ROLES");
 	}
 	
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		HttpSession httpSession = request.getSession();
+		Skin skin = new Skin();
+		skin.setId(1);
+		skin.setTitle("Homepage");
+		
+		Data d = new Data();
 		
 		/*
 		 * DAO Initialization
@@ -211,6 +219,10 @@ public class CalendarAdminController extends HttpServlet
 				
 				xslScreen = "calendar_roles.xsl";
 			}
+			else if(paramScreen.equals("CSS"))
+			{				
+				xslScreen = "calendar_css.xsl";
+			}
 			else
 			{
 				xslScreen = "calendar_general.xsl";
@@ -237,10 +249,10 @@ public class CalendarAdminController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("assetXslCalendarsUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.calendar", data);
-		xslScreen = getServletContext().getInitParameter("assetXslCalendarsPath") + xslScreen;
+		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		

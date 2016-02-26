@@ -33,7 +33,6 @@ import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 import org.sw.marketing.data.form.Data.User;
 
-@WebServlet("/selfassessment")
 public class SelfAssessmentController extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -510,10 +509,10 @@ public class SelfAssessmentController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("assetXslFormsPath"));
+		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.form", data);
-		xslScreen = getServletContext().getInitParameter("assetXslFormsPath") + xslScreen;
+		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		

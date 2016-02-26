@@ -31,6 +31,10 @@ public class CalendarParameters
 		{
 			calendar.setSkinSelector(parameterMap.get("CALENDAR_SKIN_SELECTOR")[0]);
 		}
+		if(parameterMap.get("CALENDAR_CSS") != null)
+		{
+			calendar.setSkinCssOverrides(parameterMap.get("CALENDAR_CSS")[0]);
+		}
 
 		return calendar;
 	}

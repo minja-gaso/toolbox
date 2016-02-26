@@ -36,7 +36,6 @@ import org.sw.marketing.util.DateToXmlGregorianCalendar;
 import org.sw.marketing.util.ReadFile;
 import org.sw.marketing.util.Recursion;
 
-@WebServlet("/calendarContent")
 public class CalendarContentController extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;	
@@ -200,7 +199,7 @@ public class CalendarContentController extends HttpServlet
 							for(int index = 0; index < eventTags.length; index++)
 							{
 								String eventTag = eventTags[index].trim();
-								eventTagDAO.addTag(eventTag, eventID);
+								eventTagDAO.addTag(eventTag, eventID, calendarID);
 							}
 						}
 						
@@ -372,10 +371,10 @@ public class CalendarContentController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("assetXslCalendarsContentUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.calendar", data);
-		xslScreen = getServletContext().getInitParameter("assetXslCalendarsContentPath") + xslScreen;
+		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		

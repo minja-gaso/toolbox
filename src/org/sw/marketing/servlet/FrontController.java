@@ -54,7 +54,7 @@ public class FrontController extends HttpServlet
 		}
 		if(paramComponentId == null)
 		{
-			request.getRequestDispatcher("/calendarAdmin").forward(request, response);
+			request.getRequestDispatcher("/skinService").forward(request, response);
 		}
 		else
 		{
@@ -76,6 +76,11 @@ public class FrontController extends HttpServlet
 			{
 
 				request.getRequestDispatcher("/calendarContent").forward(request, response);
+			}
+			else if(componentId == 5)
+			{
+
+				request.getRequestDispatcher("/skinService").forward(request, response);
 			}
 		}
 	}

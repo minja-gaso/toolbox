@@ -25,7 +25,6 @@ import org.sw.marketing.data.calendar.Data.Message;
 import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 
-@WebServlet("/calendarEventImageUploadServlet")
 public class CalendarImageUploadServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -80,10 +79,10 @@ public class CalendarImageUploadServlet extends HttpServlet
 		 * generate output
 		 */
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("assetXslCalendarsContentUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.calendar", data);
-		String xslScreen = getServletContext().getInitParameter("assetXslCalendarsContentPath") + "calendar_event_image_upload_iframe.xsl";
+		String xslScreen = getServletConfig().getInitParameter("xslPath") + "calendar_event_image_upload_iframe.xsl";
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 

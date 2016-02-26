@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +27,6 @@ import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 import org.sw.marketing.data.form.Data.User;
 
-@WebServlet("/survey")
 public class SurveyController extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
@@ -78,10 +76,15 @@ public class SurveyController extends HttpServlet
 		/*
 		 * Get user session information
 		 */
-		if(httpSession.getAttribute("user") != null)
+		if(httpSession.getAttribute("EMAIL_ADDRESS") != null)
 		{
-			user = (User) httpSession.getAttribute("user");
-			user = userDAO.getUserByEmail(user.getEmailAddress());
+			String email = (String) httpSession.getAttribute("EMAIL_ADDRESS");
+			user = userDAO.getUserByEmail(email);
+			if(user == null)
+			{
+				response.getWriter().println("Email not recognized.");
+				return;
+			}
 			data.setUser(user);
 		}
 		
@@ -485,10 +488,10 @@ public class SurveyController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("assetXslFormsPath"));
+		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.form", data);
-		xslScreen = getServletContext().getInitParameter("assetXslFormsPath") + xslScreen;
+		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		

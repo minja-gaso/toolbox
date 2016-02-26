@@ -4,6 +4,10 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/webservices.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/opencsv-3.6.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/joda-time-2.4.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jcabi-w3c-1.2.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jcabi-manifests-1.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jcabi-log-0.17.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/slf4j-api-1.7.17.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>

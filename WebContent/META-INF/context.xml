@@ -9,11 +9,14 @@
   <!-- <Parameter name="assetPath" value="E:\\assets\\" />-->
   <Parameter name="assetPath" value="C:\\development\\assets\\" />
   <Parameter name="assetXslPath" value="C:\\development\\assets\\xsl\\toolbox\\" />
+  <!-- 
   <Parameter name="assetXslFormsPath" value="C:\\development\\assets\\xsl\\toolbox\\forms\\" />
   <Parameter name="assetXslFormsUrl" value="http://localhost:8080/xsl/toolbox/forms/" />
   <Parameter name="assetXslCalendarsPath" value="C:\\development\\assets\\xsl\\toolbox\\calendars\\admin\\" />
   <Parameter name="assetXslCalendarsUrl" value="http://localhost:8080/xsl/toolbox/calendars/admin/" />
+   
   <Parameter name="assetXslCalendarsContentPath" value="C:\\development\\assets\\xsl\\toolbox\\calendars\\manage\\" />
   <Parameter name="assetXslCalendarsContentUrl" value="http://localhost:8080/xsl/toolbox/calendars/manage/" />
   <Parameter name="calendarUploadsPath" value="C:\\development\\uploads\\calendar\\" />
+  -->
 </Context>
