@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +20,7 @@ import org.sw.marketing.dao.calendar.event.CalendarEventDAO;
 import org.sw.marketing.data.calendar.Data;
 import org.sw.marketing.data.calendar.Data.Calendar;
 import org.sw.marketing.data.calendar.Data.Calendar.Event;
-import org.sw.marketing.data.calendar.Data.Message;
+import org.sw.marketing.data.calendar.Message;
 import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 

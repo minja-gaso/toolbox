@@ -54,7 +54,7 @@ public class FrontController extends HttpServlet
 		}
 		if(paramComponentId == null)
 		{
-			request.getRequestDispatcher("/skinService").forward(request, response);
+			request.getRequestDispatcher("/calendarAdmin").forward(request, response);
 		}
 		else
 		{

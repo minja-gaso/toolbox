@@ -3,7 +3,6 @@ package org.sw.marketing.servlet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,15 +14,12 @@ import org.sw.marketing.dao.calendar.CalendarDAO;
 import org.sw.marketing.dao.calendar.user.UserDAO;
 import org.sw.marketing.data.calendar.*;
 import org.sw.marketing.data.calendar.Data.*;
-import org.sw.marketing.data.calendar.Data.Calendar.Role;
-import org.sw.marketing.data.calendar.Data.Message;
-import org.sw.marketing.data.calendar.Data.User;
+import org.sw.marketing.data.calendar.Role;
+import org.sw.marketing.data.calendar.Message;
+import org.sw.marketing.data.calendar.User;
 import org.sw.marketing.servlet.params.calendar.CalendarParameters;
 import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
-
-import com.jcabi.w3c.ValidationResponse;
-import com.jcabi.w3c.ValidatorBuilder;
 
 public class CalendarAdminController extends HttpServlet
 {
@@ -172,7 +168,7 @@ public class CalendarAdminController extends HttpServlet
 					Role role = new Role();
 					role.setEmail(paramRoleEmail);
 					role.setType(paramRoleType);
-					role.setFkCalendarId(calendarID);
+					role.setFkId(calendarID);
 					
 					Role uniqueRole = roleDAO.getUniqueRole(role);
 					if(uniqueRole == null)

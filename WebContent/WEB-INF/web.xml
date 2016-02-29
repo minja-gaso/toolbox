@@ -85,6 +85,22 @@
     <servlet-name>Calendar Content Controller</servlet-name>
     <url-pattern>/calendarContent</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>Skin Service Controller</servlet-name>
+    <servlet-class>org.sw.marketing.servlet.SkinServiceController</servlet-class>
+    <init-param>
+      <param-name>xslPath</param-name>
+      <param-value>C:\\development\\assets\\xsl\\toolbox\\skins\\</param-value>
+    </init-param>
+    <init-param>
+      <param-name>xslUrl</param-name>
+      <param-value>http://localhost:8080/xsl/toolbox/skins/</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Skin Service Controller</servlet-name>
+    <url-pattern>/skinService</url-pattern>
+  </servlet-mapping>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>
