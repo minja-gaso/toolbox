@@ -20,18 +20,18 @@ import org.sw.marketing.dao.form.score.ScoreDAO;
 import org.sw.marketing.dao.form.submission.SubmissionDAO;
 import org.sw.marketing.dao.form.user.UserDAO;
 import org.sw.marketing.data.form.Data;
-import org.sw.marketing.data.form.Data.Environment;
 import org.sw.marketing.data.form.Data.Form;
 import org.sw.marketing.data.form.Data.Form.Question;
 import org.sw.marketing.data.form.Data.Form.Question.PossibleAnswer;
-import org.sw.marketing.data.form.Data.Message;
 import org.sw.marketing.data.form.Data.Score;
 import org.sw.marketing.data.form.Data.Submission;
+import org.sw.marketing.data.form.Environment;
+import org.sw.marketing.data.form.Message;
+import org.sw.marketing.data.form.User;
 import org.sw.marketing.servlet.params.survey.ScoreParameters;
 import org.sw.marketing.servlet.params.survey.SurveyParameters;
 import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
-import org.sw.marketing.data.form.Data.User;
 
 public class SelfAssessmentController extends HttpServlet
 {

@@ -4,10 +4,8 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/webservices.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/opencsv-3.6.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/joda-time-2.4.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jcabi-w3c-1.2.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jcabi-manifests-1.1.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jcabi-log-0.17.1.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/slf4j-api-1.7.17.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jsoup-1.8.3.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
@@ -19,9 +17,8 @@
 	<classpathentry kind="lib" path="/webservices/xmlgraphics-commons-2.0.1.jar"/>
 	<classpathentry kind="lib" path="/webservices/jackson-databind-2.6.4.jar"/>
 	<classpathentry kind="lib" path="/webservices/jackson-core-2.6.4.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/javax.mail.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-email-1.4.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.0">
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/dev-tomcat-8.0">
 		<attributes>
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>

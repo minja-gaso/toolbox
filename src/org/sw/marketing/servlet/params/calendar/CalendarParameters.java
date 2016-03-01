@@ -23,18 +23,22 @@ public class CalendarParameters
 			
 			calendar.setPrettyUrl(prettyUrl);			
 		}
-		if(parameterMap.get("CALENDAR_SKIN_URL") != null)
+//		if(parameterMap.get("CALENDAR_SKIN_URL") != null)
+//		{
+//			calendar.setSkinUrl(parameterMap.get("CALENDAR_SKIN_URL")[0]);
+//		}		
+//		if(parameterMap.get("CALENDAR_SKIN_SELECTOR") != null)
+//		{
+//			calendar.setSkinSelector(parameterMap.get("CALENDAR_SKIN_SELECTOR")[0]);
+//		}
+		if(parameterMap.get("CALENDAR_SKIN") != null)
 		{
-			calendar.setSkinUrl(parameterMap.get("CALENDAR_SKIN_URL")[0]);
-		}		
-		if(parameterMap.get("CALENDAR_SKIN_SELECTOR") != null)
-		{
-			calendar.setSkinSelector(parameterMap.get("CALENDAR_SKIN_SELECTOR")[0]);
+			calendar.setFkSkinId(Long.parseLong(parameterMap.get("CALENDAR_SKIN")[0]));
 		}
-		if(parameterMap.get("CALENDAR_CSS") != null)
-		{
-			calendar.setSkinCssOverrides(parameterMap.get("CALENDAR_CSS")[0]);
-		}
+//		if(parameterMap.get("CALENDAR_CSS") != null)
+//		{
+//			calendar.setSkinCssOverrides(parameterMap.get("CALENDAR_CSS")[0]);
+//		}
 
 		return calendar;
 	}

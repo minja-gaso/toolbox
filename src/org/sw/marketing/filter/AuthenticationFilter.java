@@ -14,11 +14,8 @@ import javax.servlet.http.HttpSession;
 
 import org.sw.marketing.dao.DAOFactory;
 import org.sw.marketing.dao.form.user.UserDAO;
-import org.sw.marketing.data.form.Data.User;
+import org.sw.marketing.data.form.*;
 
-/**
- * Servlet Filter implementation class AuthenticationFilter
- */
 @WebFilter("/controller")
 public class AuthenticationFilter implements Filter
 {

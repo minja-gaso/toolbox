@@ -162,7 +162,7 @@ public class CalendarImageUploadServlet extends HttpServlet
 							event.setFileName(fileName);
 							InputStream fileContent = item.getInputStream();
 							
-							String uploadPath = getServletContext().getInitParameter("calendarUploadsPath");						
+							String uploadPath = getServletConfig().getInitParameter("uploadPath");						
 							String calendarUploadPath = uploadPath + request.getParameter("CALENDAR_ID");
 							java.io.File calendarUploadPathFile = new java.io.File(calendarUploadPath);
 							if(!calendarUploadPathFile.exists())

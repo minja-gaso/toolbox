@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.sw.marketing.dao.calendar.DAOFactory;
 import org.sw.marketing.dao.calendar.role.CalendarRoleDAO;
+import org.sw.marketing.dao.calendar.skin.CalendarSkinDAO;
 import org.sw.marketing.dao.calendar.CalendarDAO;
 import org.sw.marketing.dao.calendar.user.UserDAO;
 import org.sw.marketing.data.calendar.*;
@@ -38,11 +39,6 @@ public class CalendarAdminController extends HttpServlet
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		HttpSession httpSession = request.getSession();
-		Skin skin = new Skin();
-		skin.setId(1);
-		skin.setTitle("Homepage");
-		
-		Data d = new Data();
 		
 		/*
 		 * DAO Initialization
@@ -214,6 +210,16 @@ public class CalendarAdminController extends HttpServlet
 				}
 				
 				xslScreen = "calendar_roles.xsl";
+			}
+			else if(paramScreen.equals("SKIN"))
+			{				
+				CalendarSkinDAO skinDAO = DAOFactory.getCalendarSkinDAO();
+				java.util.List<Skin> skins = skinDAO.getSkins(user);
+				if(skins != null)
+				{
+					data.getSkin().addAll(skins);
+				}
+				xslScreen = "calendar_skin.xsl";
 			}
 			else if(paramScreen.equals("CSS"))
 			{				
