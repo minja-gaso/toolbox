@@ -35,9 +35,17 @@ public class SurveyParameters
 			form.setPrettyUrl(prettyUrl);
 			
 		}
-		if(parameterMap.get("FORM_SKIN_URL") != null)
+//		if(parameterMap.get("FORM_SKIN_URL") != null)
+//		{
+//			form.setSkinUrl(parameterMap.get("FORM_SKIN_URL")[0]);
+//		}
+//		if(parameterMap.get("FORM_SKIN_SELECTOR") != null)
+//		{
+//			form.setSkinSelector(parameterMap.get("FORM_SKIN_SELECTOR")[0]);
+//		}
+		if(parameterMap.get("FORM_SKIN_ID") != null)
 		{
-			form.setSkinUrl(parameterMap.get("FORM_SKIN_URL")[0]);
+			form.setFkSkinId(Long.parseLong(parameterMap.get("FORM_SKIN_ID")[0]));
 		}
 		if(parameterMap.get("FORM_START_DATE") != null)
 		{
@@ -70,10 +78,6 @@ public class SurveyParameters
 			{
 				form.setEndDate(form.getStartDate());
 			}
-		}
-		if(parameterMap.get("FORM_SKIN_SELECTOR") != null)
-		{
-			form.setSkinSelector(parameterMap.get("FORM_SKIN_SELECTOR")[0]);
 		}
 		if(parameterMap.get("FORM_MAX_SUBMISSIONS") != null)
 		{

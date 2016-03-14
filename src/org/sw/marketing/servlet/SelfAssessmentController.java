@@ -17,6 +17,7 @@ import org.sw.marketing.dao.form.FormDAO;
 import org.sw.marketing.dao.form.answer.AnswerDAO;
 import org.sw.marketing.dao.form.question.QuestionDAO;
 import org.sw.marketing.dao.form.score.ScoreDAO;
+import org.sw.marketing.dao.form.skin.FormSkinDAO;
 import org.sw.marketing.dao.form.submission.SubmissionDAO;
 import org.sw.marketing.dao.form.user.UserDAO;
 import org.sw.marketing.data.form.Data;
@@ -27,6 +28,7 @@ import org.sw.marketing.data.form.Data.Score;
 import org.sw.marketing.data.form.Data.Submission;
 import org.sw.marketing.data.form.Environment;
 import org.sw.marketing.data.form.Message;
+import org.sw.marketing.data.form.Skin;
 import org.sw.marketing.data.form.User;
 import org.sw.marketing.servlet.params.survey.ScoreParameters;
 import org.sw.marketing.servlet.params.survey.SurveyParameters;
@@ -80,10 +82,15 @@ public class SelfAssessmentController extends HttpServlet
 		/*
 		 * Get user session information
 		 */
-		if(httpSession.getAttribute("user") != null)
+		if(httpSession.getAttribute("EMAIL_ADDRESS") != null)
 		{
-			user = (User) httpSession.getAttribute("user");
-			user = userDAO.getUserByEmail(user.getEmailAddress());
+			String email = (String) httpSession.getAttribute("EMAIL_ADDRESS");
+			user = userDAO.getUserByEmail(email);
+			if(user == null)
+			{
+				response.getWriter().println("Email not recognized.");
+				return;
+			}
 			data.setUser(user);
 		}
 		
@@ -432,11 +439,7 @@ public class SelfAssessmentController extends HttpServlet
 				form = formDAO.getForm(formID);
 			}
 				
-			if(paramScreen.equals("GENERAL"))
-			{
-				xslScreen = "form_general.xsl";
-			}
-			else if(paramScreen.equals("QUESTIONS_AND_ANSWERS"))
+			if(paramScreen.equals("QUESTIONS_AND_ANSWERS"))
 			{
 				xslScreen = "question_and_answer_list.xsl";
 			}			
@@ -473,6 +476,12 @@ public class SelfAssessmentController extends HttpServlet
 			}
 			else
 			{
+				FormSkinDAO skinDAO = DAOFactory.getFormSkinDAO();
+				java.util.List<Skin> skins = skinDAO.getSkins(user);
+				if(skins != null)
+				{
+					data.getSkin().addAll(skins);
+				}
 				xslScreen = "form_general.xsl";
 			}
 			

@@ -31,9 +31,9 @@ public class CalendarParameters
 //		{
 //			calendar.setSkinSelector(parameterMap.get("CALENDAR_SKIN_SELECTOR")[0]);
 //		}
-		if(parameterMap.get("CALENDAR_SKIN") != null)
+		if(parameterMap.get("CALENDAR_SKIN_ID") != null)
 		{
-			calendar.setFkSkinId(Long.parseLong(parameterMap.get("CALENDAR_SKIN")[0]));
+			calendar.setFkSkinId(Long.parseLong(parameterMap.get("CALENDAR_SKIN_ID")[0]));
 		}
 //		if(parameterMap.get("CALENDAR_CSS") != null)
 //		{

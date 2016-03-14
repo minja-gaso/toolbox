@@ -14,13 +14,17 @@ import org.sw.marketing.dao.DAOFactory;
 import org.sw.marketing.dao.form.FormDAO;
 import org.sw.marketing.dao.form.answer.AnswerDAO;
 import org.sw.marketing.dao.form.question.QuestionDAO;
+import org.sw.marketing.dao.form.role.FormRoleDAO;
+import org.sw.marketing.dao.form.skin.FormSkinDAO;
 import org.sw.marketing.dao.form.user.UserDAO;
+import org.sw.marketing.data.form.Role;
 import org.sw.marketing.data.form.Data;
 import org.sw.marketing.data.form.Data.Form;
 import org.sw.marketing.data.form.Data.Form.Question;
 import org.sw.marketing.data.form.Data.Form.Question.PossibleAnswer;
 import org.sw.marketing.data.form.Environment;
 import org.sw.marketing.data.form.Message;
+import org.sw.marketing.data.form.Skin;
 import org.sw.marketing.data.form.User;
 import org.sw.marketing.servlet.params.survey.QuestionParameters;
 import org.sw.marketing.servlet.params.survey.SurveyParameters;
@@ -47,6 +51,7 @@ public class SurveyController extends HttpServlet
 		innerScreenList.add("ANALYTICS");
 		innerScreenList.add("MESSAGES");
 		innerScreenList.add("EDIT_MESSAGE");
+		innerScreenList.add("ROLES");
 	}
 
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -60,6 +65,7 @@ public class SurveyController extends HttpServlet
 		FormDAO formDAO = DAOFactory.getFormDAO();
 		QuestionDAO questionDAO = DAOFactory.getQuestionDAO();
 		AnswerDAO answerDAO = DAOFactory.getPossibleAnswerDAO();
+		FormRoleDAO roleDAO = DAOFactory.getFormRoleDAO();
 		
 		/*
 		 * Data Initialization
@@ -366,6 +372,36 @@ public class SurveyController extends HttpServlet
 					formDAO.updateForm(form);
 				}
 			}
+			else if(paramAction.equals("ADD_ROLE"))
+			{
+				String paramRoleEmail = parameterMap.get("FORM_ROLE_EMAIL")[0];
+				String paramRoleType = parameterMap.get("FORM_ROLE_TYPE")[0];
+				
+				Role role = new Role();
+				role.setEmail(paramRoleEmail);
+				role.setType(paramRoleType);
+				role.setFkId(formID);
+				
+				Role uniqueRole = roleDAO.getUniqueRole(role);
+				if(uniqueRole == null)
+				{
+					roleDAO.insert(role);
+				}
+				else
+				{
+					Message message = new Message();
+					message.setType("error");
+					message.setLabel("The role/email combination already exists.");
+					data.getMessage().add(message);
+				}
+			}
+			else if(paramAction.equals("DELETE_ROLE"))
+			{
+				String paramRoleID = parameterMap.get("ROLE_ID")[0];
+				long roleID = Long.parseLong(paramRoleID);
+				
+				roleDAO.delete(roleID);
+			}
 		}
 		
 		/*
@@ -380,11 +416,11 @@ public class SurveyController extends HttpServlet
 				form = formDAO.getForm(formID);
 			}
 				
-			if(paramScreen.equals("GENERAL"))
-			{
-				xslScreen = "form_general.xsl";
-			}
-			else if(paramScreen.equals("QUESTION_LIST"))
+//			if(paramScreen.equals("GENERAL"))
+//			{
+//				xslScreen = "form_general.xsl";
+//			}
+			if(paramScreen.equals("QUESTION_LIST"))
 			{
 				questionList = questionDAO.getQuestions(formID);
 				xslScreen = "question_list.xsl";
@@ -463,8 +499,24 @@ public class SurveyController extends HttpServlet
 				}
 				xslScreen = "message_edit.xsl";
 			}
+			else if(paramScreen.equals("ROLES"))
+			{
+				java.util.List<Role> roles = roleDAO.getRoles(formID);
+				if(roles != null)
+				{
+					form.getRole().addAll(roles);
+				}
+				xslScreen = "form_roles.xsl";
+			}
 			else
 			{
+				FormSkinDAO skinDAO = DAOFactory.getFormSkinDAO();
+				java.util.List<Skin> skins = skinDAO.getSkins(user);
+				if(skins != null)
+				{
+					data.getSkin().addAll(skins);
+				}
+				
 				xslScreen = "form_general.xsl";
 			}
 			

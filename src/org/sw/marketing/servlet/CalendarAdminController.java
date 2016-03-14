@@ -46,6 +46,7 @@ public class CalendarAdminController extends HttpServlet
 		UserDAO userDAO = DAOFactory.getUserDAO();
 		CalendarDAO calendarDAO = DAOFactory.getCalendarDAO();
 		CalendarRoleDAO roleDAO = DAOFactory.getCalendarRoleDAO();
+		CalendarSkinDAO skinDAO = DAOFactory.getCalendarSkinDAO();
 
 		/*
 		 * Data Initialization
@@ -213,12 +214,6 @@ public class CalendarAdminController extends HttpServlet
 			}
 			else if(paramScreen.equals("SKIN"))
 			{				
-				CalendarSkinDAO skinDAO = DAOFactory.getCalendarSkinDAO();
-				java.util.List<Skin> skins = skinDAO.getSkins(user);
-				if(skins != null)
-				{
-					data.getSkin().addAll(skins);
-				}
 				xslScreen = "calendar_skin.xsl";
 			}
 			else if(paramScreen.equals("CSS"))
@@ -227,6 +222,11 @@ public class CalendarAdminController extends HttpServlet
 			}
 			else
 			{
+				java.util.List<Skin> skins = skinDAO.getSkins(user);
+				if(skins != null)
+				{
+					data.getSkin().addAll(skins);
+				}
 				xslScreen = "calendar_general.xsl";
 			}
 			
