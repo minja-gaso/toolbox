@@ -119,7 +119,7 @@ public class SurveyController extends HttpServlet
 		}
 		else if (request.getAttribute("surveyId") != null)
 		{
-			formID = (long) request.getAttribute("surveyId");
+			formID = (Long) request.getAttribute("surveyId");
 			request.removeAttribute("surveyId");
 		}
 		
@@ -386,6 +386,10 @@ public class SurveyController extends HttpServlet
 				if(uniqueRole == null)
 				{
 					roleDAO.insert(role);
+					Message message = new Message();
+					message.setType("success");
+					message.setLabel("The user was successfully added.");
+					data.getMessage().add(message);
 				}
 				else
 				{
@@ -401,6 +405,10 @@ public class SurveyController extends HttpServlet
 				long roleID = Long.parseLong(paramRoleID);
 				
 				roleDAO.delete(roleID);
+				Message message = new Message();
+				message.setType("success");
+				message.setLabel("The user was successfully deleted.");
+				data.getMessage().add(message);
 			}
 		}
 		

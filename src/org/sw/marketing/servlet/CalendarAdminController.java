@@ -214,6 +214,11 @@ public class CalendarAdminController extends HttpServlet
 			}
 			else if(paramScreen.equals("SKIN"))
 			{				
+				java.util.List<Skin> skins = skinDAO.getSkins(user);
+				if(skins != null)
+				{
+					data.getSkin().addAll(skins);
+				}
 				xslScreen = "calendar_skin.xsl";
 			}
 			else if(paramScreen.equals("CSS"))
@@ -222,11 +227,6 @@ public class CalendarAdminController extends HttpServlet
 			}
 			else
 			{
-				java.util.List<Skin> skins = skinDAO.getSkins(user);
-				if(skins != null)
-				{
-					data.getSkin().addAll(skins);
-				}
 				xslScreen = "calendar_general.xsl";
 			}
 			

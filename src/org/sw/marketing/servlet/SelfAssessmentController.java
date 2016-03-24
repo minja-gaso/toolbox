@@ -119,7 +119,7 @@ public class SelfAssessmentController extends HttpServlet
 		}
 		else if (request.getAttribute("surveyId") != null)
 		{
-			formID = (long) request.getAttribute("surveyId");
+			formID = (Long) request.getAttribute("surveyId");
 			request.removeAttribute("surveyId");
 		}
 		if(formID > 0)
@@ -418,6 +418,13 @@ public class SelfAssessmentController extends HttpServlet
 					Message message = new Message();
 					message.setType("error");
 					message.setLabel("The low score must be smaller than or equal to the high score.  The values have been swapped.");
+					data.getMessage().add(message);
+				}
+				else
+				{
+					Message message = new Message();
+					message.setType("success");
+					message.setLabel("The score entry has been saved.");
 					data.getMessage().add(message);
 				}
 			}

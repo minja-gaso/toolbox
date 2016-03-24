@@ -48,6 +48,8 @@ public class SkinPreviewServlet extends HttpServlet {
 				skinHtmlStr = skinHtmlStr.replace("{CSS}", styleElementStr);
 			}
 			
+			response.setContentType("text/html");
+			response.setCharacterEncoding("utf-8");
 			response.getWriter().println(skinHtmlStr);
 		}
 		else

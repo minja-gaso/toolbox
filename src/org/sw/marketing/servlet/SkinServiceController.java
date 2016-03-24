@@ -34,6 +34,7 @@ public class SkinServiceController extends HttpServlet
 	public void init()
 	{
 		innerScreenList.add("GENERAL");
+		innerScreenList.add("HTML");
 		innerScreenList.add("CSS");
 		innerScreenList.add("ROLES");
 	}
@@ -113,7 +114,12 @@ public class SkinServiceController extends HttpServlet
 				if(paramAction.equals("CREATE_SKIN"))
 				{
 					skinID = skinDAO.createSkin(data);
-					skin = skinDAO.getSkin(skinID);
+					skin = skinDAO.getSkin(skinID);	
+					
+					message = new Message();
+					message.setType("success");
+					message.setLabel("The skin has been created.");
+					data.getMessage().add(message);
 				}
 			}
 			else
@@ -163,14 +169,14 @@ public class SkinServiceController extends HttpServlet
 				}
 				else if(paramAction.equals("DELETE_SKIN"))
 				{
-//					skinDAO.deleteSkin(skin.getId());
-//					
-//					message = new Message();
-//					message.setType("success");
-//					message.setLabel("The calendar has been deleted.");
-//					data.getMessage().add(message);
-//					
-//					skinID = 0;
+					skinDAO.deleteSkin(skin.getId());
+					
+					message = new Message();
+					message.setType("success");
+					message.setLabel("The skin has been deleted.");
+					data.getMessage().add(message);
+					
+					skinID = 0;
 				}
 				else if(paramAction.equals("ADD_ROLE"))
 				{
@@ -186,6 +192,10 @@ public class SkinServiceController extends HttpServlet
 					if(uniqueRole == null)
 					{
 						roleDAO.insert(role);
+						message = new Message();
+						message.setType("success");
+						message.setLabel("The user was successfully added.");
+						data.getMessage().add(message);
 					}
 					else
 					{
@@ -194,6 +204,17 @@ public class SkinServiceController extends HttpServlet
 						message.setLabel("The role/email combination already exists.");
 						data.getMessage().add(message);
 					}
+				}
+				else if(paramAction.equals("DELETE_ROLE"))
+				{
+					String paramRoleID = parameterMap.get("ROLE_ID")[0];
+					long roleID = Long.parseLong(paramRoleID);
+					roleDAO.delete(roleID);
+					
+					message = new Message();
+					message.setType("success");
+					message.setLabel("The user was successfully deleted.");
+					data.getMessage().add(message);
 				}
 				else if(paramAction.equals("SAVE_APP_CSS"))
 				{
