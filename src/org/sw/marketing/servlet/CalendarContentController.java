@@ -99,6 +99,10 @@ public class CalendarContentController extends HttpServlet
 		 * Calendar ID
 		 */
 		long calendarID = 0;
+		if(request.getSession().getAttribute("CALENDAR_ID") != null)
+		{
+			calendarID = (Long) request.getSession().getAttribute("CALENDAR_ID");
+		}
 		if(parameterMap.get("CALENDAR_ID") != null)
 		{
 			try
@@ -262,13 +266,24 @@ public class CalendarContentController extends HttpServlet
 		/*
 		 * Determine which screen to display
 		 */
-		if(parameterMap.get("SCREEN") != null && calendarID > 0)
+		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("CALENDAR_SCREEN") != null)
+				&& calendarID > 0)
 		{
-			String paramScreen = parameterMap.get("SCREEN")[0];
+			String paramScreen = null;
+			if(parameterMap.get("SCREEN") != null)
+			{
+				paramScreen = parameterMap.get("SCREEN")[0];
+			}
+			else
+			{
+				paramScreen = (String) request.getSession().getAttribute("CALENDAR_SCREEN");
+			}
 			
 			if(innerScreenList.contains(paramScreen))
 			{
 				calendar = calendarDAO.getCalendar(calendarID);
+				
+				request.getSession().setAttribute("CALENDAR_ID", calendarID);
 			}
 			
 			if(event != null)
@@ -324,6 +339,12 @@ public class CalendarContentController extends HttpServlet
 			else
 			{
 				xslScreen = "calendar_list.xsl";
+				
+				calendars = calendarDAO.getCalendarsManage(user);
+				if(calendars != null)
+				{
+					data.getCalendar().addAll(calendars);
+				}
 			}
 			
 			if(calendar != null)
@@ -341,6 +362,8 @@ public class CalendarContentController extends HttpServlet
 				
 				data.getCalendar().add(calendar);
 			}
+			
+			request.getSession().setAttribute("CALENDAR_SCREEN", paramScreen);
 		}
 		else
 		{
@@ -351,6 +374,9 @@ public class CalendarContentController extends HttpServlet
 			{
 				data.getCalendar().addAll(calendars);
 			}
+			
+			request.getSession().removeAttribute("CALENDAR_ID");
+			request.getSession().setAttribute("CALENDAR_SCREEN", "LIST");
 		}
 		
 		/*

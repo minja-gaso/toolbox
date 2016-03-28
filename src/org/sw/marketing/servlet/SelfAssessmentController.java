@@ -105,6 +105,10 @@ public class SelfAssessmentController extends HttpServlet
 		 */
 		String formIdStr = null;
 		long formID = 0;
+		if(request.getSession().getAttribute("FORM_ID") != null)
+		{
+			formID = (Long) request.getSession().getAttribute("FORM_ID");
+		}
 		if(parameterMap.get("FORM_ID") != null)
 		{
 			formIdStr = parameterMap.get("FORM_ID")[0];
@@ -437,13 +441,23 @@ public class SelfAssessmentController extends HttpServlet
 		/*
 		 * Determine which screen to display
 		 */
-		if(parameterMap.get("SCREEN") != null && formID > 0)
+		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("FORM_SCREEN") != null)
+				&& formID > 0)
 		{
-			String paramScreen = parameterMap.get("SCREEN")[0];
+			String paramScreen = null;
+			if(parameterMap.get("SCREEN") != null)
+			{
+				paramScreen = parameterMap.get("SCREEN")[0];
+			}
+			else
+			{
+				paramScreen = (String) request.getSession().getAttribute("FORM_SCREEN");
+			}
 			
 			if(innerScreenList.contains(paramScreen))
 			{
 				form = formDAO.getForm(formID);
+				request.getSession().setAttribute("FORM_ID", formID);
 			}
 				
 			if(paramScreen.equals("QUESTIONS_AND_ANSWERS"))
@@ -508,6 +522,8 @@ public class SelfAssessmentController extends HttpServlet
 				
 				data.getForm().add(form);
 			}
+			
+			request.getSession().setAttribute("FORM_SCREEN", paramScreen);
 		}
 		else
 		{
@@ -517,6 +533,9 @@ public class SelfAssessmentController extends HttpServlet
 			{
 				data.getForm().addAll(formList);
 			}
+			
+			request.getSession().setAttribute("FORM_ID", (long) 0);
+			request.getSession().setAttribute("FORM_SCREEN", "LIST");
 		}
 
 		Environment environment = new Environment();

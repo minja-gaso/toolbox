@@ -41,6 +41,7 @@ public class SurveyController extends HttpServlet
 	public void init()
 	{
 		innerScreenList.add("GENERAL");
+		innerScreenList.add("APPEARANCE");
 		innerScreenList.add("QUESTION_LIST");
 		innerScreenList.add("QUESTION_TYPE_TEXT");
 		innerScreenList.add("QUESTION_TYPE_TEXTAREA");
@@ -105,6 +106,10 @@ public class SurveyController extends HttpServlet
 		 */
 		String formIdStr = null;
 		long formID = 0;
+		if(request.getSession().getAttribute("FORM_ID") != null)
+		{
+			formID = (Long) request.getSession().getAttribute("FORM_ID");
+		}
 		if(parameterMap.get("FORM_ID") != null)
 		{
 			formIdStr = parameterMap.get("FORM_ID")[0];
@@ -415,20 +420,42 @@ public class SurveyController extends HttpServlet
 		/*
 		 * Determine which screen to display
 		 */
-		if(parameterMap.get("SCREEN") != null && formID > 0)
+		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("FORM_SCREEN") != null)
+				&& formID > 0)
 		{
-			String paramScreen = parameterMap.get("SCREEN")[0];
+			String paramScreen = null;
+			if(parameterMap.get("SCREEN") != null)
+			{
+				paramScreen = parameterMap.get("SCREEN")[0];
+			}
+			else
+			{
+				paramScreen = (String) request.getSession().getAttribute("FORM_SCREEN");
+			}
 			
 			if(innerScreenList.contains(paramScreen))
 			{
 				form = formDAO.getForm(formID);
+				request.getSession().setAttribute("FORM_ID", formID);
 			}
 				
 //			if(paramScreen.equals("GENERAL"))
 //			{
 //				xslScreen = "form_general.xsl";
 //			}
-			if(paramScreen.equals("QUESTION_LIST"))
+
+			if(paramScreen.equals("APPEARANCE"))
+			{
+				FormSkinDAO skinDAO = DAOFactory.getFormSkinDAO();
+				java.util.List<Skin> skins = skinDAO.getSkins(user);
+				if(skins != null)
+				{
+					data.getSkin().addAll(skins);
+				}
+				
+				xslScreen = "form_appearance.xsl";
+			}
+			else if(paramScreen.equals("QUESTION_LIST"))
 			{
 				questionList = questionDAO.getQuestions(formID);
 				xslScreen = "question_list.xsl";
@@ -532,6 +559,8 @@ public class SurveyController extends HttpServlet
 			{
 				data.getForm().add(form);
 			}
+			
+			request.getSession().setAttribute("FORM_SCREEN", paramScreen);
 		}
 		else
 		{
@@ -541,8 +570,11 @@ public class SurveyController extends HttpServlet
 			{
 				data.getForm().addAll(formList);
 			}
-		}
 
+			request.getSession().setAttribute("FORM_ID", (long) 0);
+			request.getSession().setAttribute("FORM_SCREEN", "LIST");
+		}
+		
 		environment.setComponentId(1);
 		environment.setServerName(getBaseUrl(request));
 		data.setEnvironment(environment);
