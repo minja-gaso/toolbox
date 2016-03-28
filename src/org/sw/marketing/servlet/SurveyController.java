@@ -41,6 +41,7 @@ public class SurveyController extends HttpServlet
 	public void init()
 	{
 		innerScreenList.add("GENERAL");
+		innerScreenList.add("APPEARANCE");
 		innerScreenList.add("QUESTION_LIST");
 		innerScreenList.add("QUESTION_TYPE_TEXT");
 		innerScreenList.add("QUESTION_TYPE_TEXTAREA");
@@ -428,7 +429,18 @@ public class SurveyController extends HttpServlet
 //			{
 //				xslScreen = "form_general.xsl";
 //			}
-			if(paramScreen.equals("QUESTION_LIST"))
+			if(paramScreen.equals("APPEARANCE"))
+			{
+				FormSkinDAO skinDAO = DAOFactory.getFormSkinDAO();
+				java.util.List<Skin> skins = skinDAO.getSkins(user);
+				if(skins != null)
+				{
+					data.getSkin().addAll(skins);
+				}
+				
+				xslScreen = "form_appearance.xsl";
+			}
+			else if(paramScreen.equals("QUESTION_LIST"))
 			{
 				questionList = questionDAO.getQuestions(formID);
 				xslScreen = "question_list.xsl";
@@ -518,12 +530,12 @@ public class SurveyController extends HttpServlet
 			}
 			else
 			{
-				FormSkinDAO skinDAO = DAOFactory.getFormSkinDAO();
-				java.util.List<Skin> skins = skinDAO.getSkins(user);
-				if(skins != null)
-				{
-					data.getSkin().addAll(skins);
-				}
+//				FormSkinDAO skinDAO = DAOFactory.getFormSkinDAO();
+//				java.util.List<Skin> skins = skinDAO.getSkins(user);
+//				if(skins != null)
+//				{
+//					data.getSkin().addAll(skins);
+//				}
 				
 				xslScreen = "form_general.xsl";
 			}
@@ -548,10 +560,10 @@ public class SurveyController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("formXslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.form", data);
-		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
+		xslScreen = getServletContext().getInitParameter("formXslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		

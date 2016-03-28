@@ -78,10 +78,10 @@ public class CalendarImageUploadServlet extends HttpServlet
 		 * generate output
 		 */
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("calManageXslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.calendar", data);
-		String xslScreen = getServletConfig().getInitParameter("xslPath") + "calendar_event_image_upload_iframe.xsl";
+		String xslScreen = getServletContext().getInitParameter("calManageXslPath") + "calendar_event_image_upload_iframe.xsl";
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 
@@ -162,7 +162,7 @@ public class CalendarImageUploadServlet extends HttpServlet
 							event.setFileName(fileName);
 							InputStream fileContent = item.getInputStream();
 							
-							String uploadPath = getServletConfig().getInitParameter("uploadPath");						
+							String uploadPath = getServletContext().getInitParameter("calUploadPath");						
 							String calendarUploadPath = uploadPath + request.getParameter("CALENDAR_ID");
 							java.io.File calendarUploadPathFile = new java.io.File(calendarUploadPath);
 							if(!calendarUploadPathFile.exists())

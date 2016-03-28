@@ -251,10 +251,10 @@ public class CalendarAdminController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("calAdminXslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.calendar", data);
-		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
+		xslScreen = getServletContext().getInitParameter("calAdminXslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		
