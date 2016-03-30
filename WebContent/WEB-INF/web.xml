@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
-xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" 
-id="WebApp_ID" version="3.1">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
   <display-name>toolbox</display-name>
   <servlet>
     <servlet-name>Survey Controller</servlet-name>
@@ -103,6 +100,39 @@ id="WebApp_ID" version="3.1">
   <servlet-mapping>
     <servlet-name>Skin Service Controller</servlet-name>
     <url-pattern>/skinService</url-pattern>
+  </servlet-mapping>
+  <!-- Blogs -->
+  <servlet>
+    <servlet-name>Blog Admin Controller</servlet-name>
+    <servlet-class>org.sw.marketing.servlet.BlogAdminController</servlet-class>
+    <init-param>
+      <param-name>xslPath</param-name>
+      <param-value>C:\\development\\assets\\xsl\\toolbox\\blogs\\admin\\</param-value>
+    </init-param>
+    <init-param>
+      <param-name>xslUrl</param-name>
+      <param-value>http://localhost:8080/xsl/toolbox/blogs/admin/</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Blog Admin Controller</servlet-name>
+    <url-pattern>/blogAdmin</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Blog Content Controller</servlet-name>
+    <servlet-class>org.sw.marketing.servlet.BlogContentController</servlet-class>
+    <init-param>
+      <param-name>xslPath</param-name>
+      <param-value>C:\\development\\assets\\xsl\\toolbox\\blogs\\manage\\</param-value>
+    </init-param>
+    <init-param>
+      <param-name>xslUrl</param-name>
+      <param-value>http://localhost:8080/xsl/toolbox/blogs/manage/</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Blog Content Controller</servlet-name>
+    <url-pattern>/blogContent</url-pattern>
   </servlet-mapping>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>

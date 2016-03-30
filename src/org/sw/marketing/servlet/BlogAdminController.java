@@ -8,21 +8,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.sw.marketing.dao.calendar.DAOFactory;
-import org.sw.marketing.dao.calendar.role.CalendarRoleDAO;
-import org.sw.marketing.dao.calendar.skin.CalendarSkinDAO;
-import org.sw.marketing.dao.calendar.CalendarDAO;
-import org.sw.marketing.dao.calendar.user.UserDAO;
-import org.sw.marketing.data.calendar.*;
-import org.sw.marketing.data.calendar.Data.*;
-import org.sw.marketing.data.calendar.Role;
-import org.sw.marketing.data.calendar.Message;
-import org.sw.marketing.data.calendar.User;
-import org.sw.marketing.servlet.params.calendar.CalendarParameters;
+import org.sw.marketing.dao.blog.DAOFactory;
+import org.sw.marketing.dao.blog.role.BlogRoleDAO;
+import org.sw.marketing.dao.blog.skin.BlogSkinDAO;
+import org.sw.marketing.dao.blog.user.UserDAO;
+import org.sw.marketing.dao.blog.BlogDAO;
+import org.sw.marketing.data.blog.Data.Blog;
+import org.sw.marketing.data.blog.*;
+import org.sw.marketing.data.blog.Role;
+import org.sw.marketing.data.blog.Message;
+import org.sw.marketing.data.blog.User;
+import org.sw.marketing.servlet.params.blog.BlogParameters;
 import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 
-public class CalendarAdminController extends HttpServlet
+public class BlogAdminController extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -32,7 +32,7 @@ public class CalendarAdminController extends HttpServlet
 	public void init()
 	{
 		innerScreenList.add("GENERAL");
-		innerScreenList.add("CSS");
+		innerScreenList.add("APPEARANCE");
 		innerScreenList.add("ROLES");
 	}
 	
@@ -44,17 +44,17 @@ public class CalendarAdminController extends HttpServlet
 		 * DAO Initialization
 		 */
 		UserDAO userDAO = DAOFactory.getUserDAO();
-		CalendarDAO calendarDAO = DAOFactory.getCalendarDAO();
-		CalendarRoleDAO roleDAO = DAOFactory.getCalendarRoleDAO();
-		CalendarSkinDAO skinDAO = DAOFactory.getCalendarSkinDAO();
+		BlogDAO blogDAO = DAOFactory.getBlogDAO();
+		BlogRoleDAO roleDAO = DAOFactory.getBlogRoleDAO();
+		BlogSkinDAO skinDAO = DAOFactory.getBlogSkinDAO();
 
 		/*
 		 * Data Initialization
 		 */
 		Data data = new Data();
 		Environment environment = new Environment();
-		java.util.List<Calendar> calendars = null;
-		Calendar calendar = null;
+		java.util.List<Blog> blogs = null;
+		Blog blog = null;
 		User user = null;
 		
 		/*
@@ -81,20 +81,20 @@ public class CalendarAdminController extends HttpServlet
 		/*
 		 * Calendar ID
 		 */
-		long calendarID = 0;
-		if(request.getSession().getAttribute("CALENDAR_ID") != null)
+		long blogID = 0;
+		if(request.getSession().getAttribute("BLOG_ID") != null)
 		{
-			calendarID = (Long) request.getSession().getAttribute("CALENDAR_ID");
+			blogID = (Long) request.getSession().getAttribute("BLOG_ID");
 		}
-		if(parameterMap.get("CALENDAR_ID") != null)
+		if(parameterMap.get("BLOG_ID") != null)
 		{
 			try
 			{
-				calendarID = Long.parseLong(parameterMap.get("CALENDAR_ID")[0]);
+				blogID = Long.parseLong(parameterMap.get("BLOG_ID")[0]);
 			}
 			catch(NumberFormatException e)
 			{
-				calendarID = 0;
+				blogID = 0;
 			}
 		}
 		
@@ -109,31 +109,31 @@ public class CalendarAdminController extends HttpServlet
 		if(parameterMap.get("ACTION") != null)
 		{
 			String paramAction = parameterMap.get("ACTION")[0];
-			if(calendarID == 0)
+			if(blogID == 0)
 			{
-				if(paramAction.equals("CREATE_CALENDAR"))
+				if(paramAction.equals("CREATE_BLOG"))
 				{
-					calendarID = calendarDAO.createCalendar(user);
-					calendar = calendarDAO.getCalendar(calendarID);
+					blogID = blogDAO.createBlog(user);
+					blog = blogDAO.getBlog(blogID);
 				}
 			}
 			else
 			{
-				calendar = calendarDAO.getCalendar(calendarID);
+				blog = blogDAO.getBlog(blogID);
 				
-				if(paramAction.equals("SAVE_CALENDAR"))
+				if(paramAction.equals("SAVE_BLOG"))
 				{
-					calendar = CalendarParameters.process(request, calendar);
+					blog = BlogParameters.process(request, blog);
 					
-					Calendar tempCalendar = calendarDAO.getCalendarByPrettyUrl(calendar.getPrettyUrl());
-					if(tempCalendar != null && tempCalendar.getId() != calendar.getId() && tempCalendar.getPrettyUrl().equals(calendar.getPrettyUrl()))
+					Blog tempBlog = blogDAO.getBlogByPrettyUrl(blog.getPrettyUrl());
+					if(tempBlog != null && tempBlog.getId() != blog.getId() && tempBlog.getPrettyUrl().equals(blog.getPrettyUrl()))
 					{
 						Message message = new Message();
 						message.setType("error");
 						message.setLabel("The pretty URL is already in use.  Please choose a unique one.");
 						data.getMessage().add(message);
 					}
-					else if(parameterMap.get("CALENDAR_PRETTY_URL") != null && parameterMap.get("CALENDAR_PRETTY_URL")[0].trim().equals(""))
+					else if(parameterMap.get("BLOG_PRETTY_URL") != null && parameterMap.get("BLOG_PRETTY_URL")[0].trim().equals(""))
 					{
 						Message message = new Message();
 						message.setType("error");
@@ -142,34 +142,34 @@ public class CalendarAdminController extends HttpServlet
 					}
 					else
 					{
-						calendarDAO.updateCalendar(calendar);
+						blogDAO.updateBlog(blog);
 						
 						Message message = new Message();
 						message.setType("success");
-						message.setLabel("The calendar has been saved.");
+						message.setLabel("The blog has been saved.");
 						data.getMessage().add(message);
 					}
 				}
 				else if(paramAction.equals("DELETE_CALENDAR"))
 				{
-					calendarDAO.deleteCalendar(calendar.getId());
+					blogDAO.deleteBlog(blog.getId());
 					
 					Message message = new Message();
 					message.setType("success");
 					message.setLabel("The calendar has been deleted.");
 					data.getMessage().add(message);
 					
-					calendarID = 0;
+					blogID = 0;
 				}
 				else if(paramAction.equals("ADD_ROLE"))
 				{
-					String paramRoleEmail = parameterMap.get("CALENDAR_ROLE_EMAIL")[0];
-					String paramRoleType = parameterMap.get("CALENDAR_ROLE_TYPE")[0];
+					String paramRoleEmail = parameterMap.get("BLOG_ROLE_EMAIL")[0];
+					String paramRoleType = parameterMap.get("BLOG_ROLE_TYPE")[0];
 					
 					Role role = new Role();
 					role.setEmail(paramRoleEmail);
 					role.setType(paramRoleType);
-					role.setFkId(calendarID);
+					role.setFkId(blogID);
 					
 					Role uniqueRole = roleDAO.getUniqueRole(role);
 					if(uniqueRole == null)
@@ -197,8 +197,8 @@ public class CalendarAdminController extends HttpServlet
 		/*
 		 * Determine which screen to display
 		 */
-		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("CALENDAR_SCREEN") != null)
-				&& calendarID > 0)
+		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("BLOG_SCREEN") != null)
+				&& blogID > 0)
 		{
 			String paramScreen = null;
 			if(parameterMap.get("SCREEN") != null)
@@ -207,26 +207,26 @@ public class CalendarAdminController extends HttpServlet
 			}
 			else
 			{
-				paramScreen = (String) request.getSession().getAttribute("CALENDAR_SCREEN");
+				paramScreen = (String) request.getSession().getAttribute("BLOG_SCREEN");
 			}
 				
 			
 			if(innerScreenList.contains(paramScreen))
 			{
-				calendar = calendarDAO.getCalendar(calendarID);
+				blog = blogDAO.getBlog(blogID);
 				
-				request.getSession().setAttribute("CALENDAR_ID", calendarID);
+				request.getSession().setAttribute("BLOG_ID", blogID);
 			}
 				
 			if(paramScreen.equals("ROLES"))
 			{
-				java.util.List<Role> roles = roleDAO.getRoles(calendarID);
+				java.util.List<Role> roles = roleDAO.getRoles(blogID);
 				if(roles != null)
 				{
-					calendar.getRole().addAll(roles);
+					blog.getRole().addAll(roles);
 				}
 				
-				xslScreen = "calendar_roles.xsl";
+				xslScreen = "roles.xsl";
 			}
 			else if(paramScreen.equals("SKIN"))
 			{				
@@ -235,53 +235,53 @@ public class CalendarAdminController extends HttpServlet
 				{
 					data.getSkin().addAll(skins);
 				}
-				xslScreen = "calendar_skin.xsl";
+				xslScreen = "skin.xsl";
 			}
 			else if(paramScreen.equals("CSS"))
 			{				
-				xslScreen = "calendar_css.xsl";
+				xslScreen = "css.xsl";
 			}
 			else
 			{
-				xslScreen = "calendar_general.xsl";
+				xslScreen = "general.xsl";
 			}
 			
-			if(calendar != null)
+			if(blog != null)
 			{
-				data.getCalendar().add(calendar);
+				data.getBlog().add(blog);
 			}
 			
-			request.getSession().setAttribute("CALENDAR_SCREEN", paramScreen);
+			request.getSession().setAttribute("BLOG_SCREEN", paramScreen);
 		}
 		else
 		{
-			xslScreen = "calendar_list.xsl";
+			xslScreen = "list.xsl";
 			
-			calendars = calendarDAO.getCalendars(user);
-			if(calendars != null)
+			blogs = blogDAO.getBlogs(user);
+			if(blogs != null)
 			{
-				data.getCalendar().addAll(calendars);
+				data.getBlog().addAll(blogs);
 			}
 			
-			request.getSession().removeAttribute("CALENDAR_ID");
-			request.getSession().setAttribute("CALENDAR_SCREEN", "LIST");
+			request.getSession().removeAttribute("BLOG_ID");
+			request.getSession().setAttribute("BLOG_SCREEN", "LIST");
 		}
 		
-		environment.setComponentId(3);
+		environment.setComponentId(6);
 		environment.setServerName(getBaseUrl(request));
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("calAdminXslUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
 		
-		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.calendar", data);
-		xslScreen = getServletContext().getInitParameter("calAdminXslPath") + xslScreen;
+		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.blog", data);
+		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		
 		String toolboxSkinPath = getServletContext().getInitParameter("assetPath") + "toolbox.html";
 		String skinHtmlStr = ReadFile.getSkin(toolboxSkinPath);
-		skinHtmlStr = skinHtmlStr.replace("{NAME}", "List of Calendars");
+		skinHtmlStr = skinHtmlStr.replace("{NAME}", "List of Blogs");
 		skinHtmlStr = skinHtmlStr.replace("{CONTENT}", htmlStr);
 		
 		System.out.println(xmlStr);

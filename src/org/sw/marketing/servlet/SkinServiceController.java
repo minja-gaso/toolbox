@@ -86,6 +86,10 @@ public class SkinServiceController extends HttpServlet
 		 * Calendar ID
 		 */
 		long skinID = 0;
+		if(request.getSession().getAttribute("SKIN_ID") != null)
+		{
+			skinID = (Long) request.getSession().getAttribute("SKIN_ID");
+		}
 		if(parameterMap.get("SKIN_ID") != null)
 		{
 			try
@@ -94,7 +98,7 @@ public class SkinServiceController extends HttpServlet
 			}
 			catch(NumberFormatException e)
 			{
-				skinID = 0;
+//				skinID = 0;
 			}
 		}
 		
@@ -243,13 +247,25 @@ public class SkinServiceController extends HttpServlet
 		/*
 		 * Determine which screen to display
 		 */
-		if(parameterMap.get("SCREEN") != null && skinID > 0)
+		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("SKIN_SCREEN") != null)
+				&& skinID > 0)
 		{
-			String paramScreen = parameterMap.get("SCREEN")[0];
+			String paramScreen = null;
+			if(parameterMap.get("SCREEN") != null)
+			{
+				paramScreen = parameterMap.get("SCREEN")[0];
+			}
+			else
+			{
+				paramScreen = (String) request.getSession().getAttribute("SKIN_SCREEN");
+			}
+					
 			
 			if(innerScreenList.contains(paramScreen))
 			{
 				skin = skinDAO.getSkin(skinID);
+				
+				request.getSession().setAttribute("SKIN_ID", skinID);
 			}
 				
 			if(paramScreen.equals("ROLES"))
@@ -286,6 +302,8 @@ public class SkinServiceController extends HttpServlet
 			{
 				data.getSkin().add(skin);
 			}
+			
+			request.getSession().setAttribute("SKIN_SCREEN", paramScreen);
 		}
 		else
 		{
@@ -296,6 +314,9 @@ public class SkinServiceController extends HttpServlet
 			{
 				data.getSkin().addAll(skins);
 			}
+			
+			request.getSession().removeAttribute("SKIN_ID");
+			request.getSession().setAttribute("SKIN_SCREEN", "LIST");
 		}
 		
 		environment.setComponentId(5);
@@ -315,7 +336,7 @@ public class SkinServiceController extends HttpServlet
 		skinHtmlStr = skinHtmlStr.replace("{NAME}", "List of Skins");
 		skinHtmlStr = skinHtmlStr.replace("{CONTENT}", htmlStr);
 		
-		System.out.println(xmlStr);
+//		System.out.println(xmlStr);
 		response.getWriter().print(skinHtmlStr);
 	}
 

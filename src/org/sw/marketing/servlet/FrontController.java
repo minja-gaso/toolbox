@@ -54,7 +54,7 @@ public class FrontController extends HttpServlet
 		}
 		if(paramComponentId == null)
 		{
-			request.getRequestDispatcher("/skinService").forward(request, response);
+			request.getRequestDispatcher("/blogContent").forward(request, response);
 		}
 		else
 		{
@@ -79,8 +79,15 @@ public class FrontController extends HttpServlet
 			}
 			else if(componentId == 5)
 			{
-
 				request.getRequestDispatcher("/skinService").forward(request, response);
+			}
+			else if(componentId == 6)
+			{
+				request.getRequestDispatcher("/blogAdmin").forward(request, response);
+			}
+			else if(componentId == 7)
+			{
+				request.getRequestDispatcher("/blogContent").forward(request, response);
 			}
 		}
 	}
