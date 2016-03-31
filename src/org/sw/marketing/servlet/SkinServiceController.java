@@ -324,10 +324,10 @@ public class SkinServiceController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("skinXslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.skin", data);
-		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
+		xslScreen = getServletContext().getInitParameter("skinXslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		

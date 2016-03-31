@@ -18,10 +18,12 @@ import org.sw.marketing.dao.blog.BlogDAO;
 import org.sw.marketing.dao.blog.topic.BlogTopicDAO;
 import org.sw.marketing.dao.blog.topic.BlogTopicTagDAO;
 import org.sw.marketing.dao.blog.DAOFactory;
+import org.sw.marketing.dao.blog.file.BlogTopicFileDAO;
 import org.sw.marketing.dao.blog.user.UserDAO;
 import org.sw.marketing.data.blog.Data;
 import org.sw.marketing.data.blog.Data.Blog;
 import org.sw.marketing.data.blog.Data.Blog.Topic;
+import org.sw.marketing.data.blog.Data.Blog.Topic.File;
 import org.sw.marketing.data.blog.Data.Blog.Topic.Tag;
 import org.sw.marketing.data.blog.Environment;
 import org.sw.marketing.data.blog.Message;
@@ -42,9 +44,9 @@ public class BlogContentController extends HttpServlet
 	{
 		innerScreenList.add("TOPICS");
 		innerScreenList.add("TOPIC");
-		innerScreenList.add("CATEGORIES");
-		innerScreenList.add("EVENT_RECURRENCE");
-		innerScreenList.add("EVENT_IMAGE_UPLOAD");		
+		innerScreenList.add("ARTICLE");
+		innerScreenList.add("FILE_UPLOAD");	
+		innerScreenList.add("CATEGORIES");	
 	}
 	
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -58,6 +60,7 @@ public class BlogContentController extends HttpServlet
 		BlogDAO blogDAO = DAOFactory.getBlogDAO();
 		BlogTopicDAO topicDAO = DAOFactory.getBlogTopicDAO();
 		BlogTopicTagDAO topicTagDAO = DAOFactory.getBlogTopicTagDAO();
+		BlogTopicFileDAO topicFileDAO = DAOFactory.getBlogTopicFileDAO();
 //		CalendarCategoryDAO categoryDAO = DAOFactory.getBlogCategoryDAO();
 
 		/*
@@ -96,9 +99,9 @@ public class BlogContentController extends HttpServlet
 		 * Calendar ID
 		 */
 		long blogID = 0;
-		if(request.getSession().getAttribute("BLOG_ID") != null)
+		if(request.getSession().getAttribute("BLOG_CONTENT_ID") != null)
 		{
-			blogID = (Long) request.getSession().getAttribute("BLOG_ID");
+			blogID = (Long) request.getSession().getAttribute("BLOG_CONTENT_ID");
 		}
 		if(parameterMap.get("BLOG_ID") != null)
 		{
@@ -270,16 +273,12 @@ public class BlogContentController extends HttpServlet
 			{
 				blog = blogDAO.getBlog(blogID);
 				
-				request.getSession().setAttribute("BLOG_ID", blogID);
+				request.getSession().setAttribute("BLOG_CONTENT_ID", blogID);
 			}
 			
 			if(topic != null)
 			{
-				if(paramScreen.equals("EVENT_IMAGE_UPLOAD"))
-				{
-					xslScreen = "event_image_upload.xsl";
-				}
-				else
+				if(paramScreen.equals("TOPIC"))
 				{
 					java.util.List<Tag> tags = topicTagDAO.getTags(topicID);
 					if(tags != null)
@@ -288,13 +287,25 @@ public class BlogContentController extends HttpServlet
 					}
 					
 					xslScreen = "topic.xsl";
+				}
+				else if(paramScreen.equals("ARTICLE"))
+				{		
+					java.util.List<File> files = topicFileDAO.getFiles(topicID);
+					if(files != null)
+					{
+						topic.getFile().addAll(files);
+					}			
+					xslScreen = "article.xsl";
+				}
+				else if(paramScreen.equals("FILE_UPLOAD"))
+				{
+					java.util.List<File> files = topicFileDAO.getFiles(topicID);
+					if(files != null)
+					{
+						topic.getFile().addAll(files);
+					}
 					
-
-//					String paramAction = parameterMap.get("ACTION")[0];
-//					if(paramScreen.equals("EVENT") && !paramAction.equals("CREATE_EVENT"))
-//					{
-//						messages = eventSaveValidation(event);
-//					}
+					xslScreen = "file_upload.xsl";
 				}
 			}
 			else if(paramScreen.equals("TOPICS"))
@@ -350,7 +361,7 @@ public class BlogContentController extends HttpServlet
 				data.getBlog().addAll(blogs);
 			}
 			
-			request.getSession().removeAttribute("BLOG_ID");
+			request.getSession().removeAttribute("BLOG_CONTENT_ID");
 			request.getSession().setAttribute("BLOG_CONTENT_SCREEN", "LIST");
 		}
 		
@@ -371,10 +382,10 @@ public class BlogContentController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("blogManageXslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.blog", data);
-		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
+		xslScreen = getServletContext().getInitParameter("blogManageXslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		

@@ -82,9 +82,9 @@ public class CalendarAdminController extends HttpServlet
 		 * Calendar ID
 		 */
 		long calendarID = 0;
-		if(request.getSession().getAttribute("CALENDAR_ID") != null)
+		if(request.getSession().getAttribute("CALENDAR_ADMIN_ID") != null)
 		{
-			calendarID = (Long) request.getSession().getAttribute("CALENDAR_ID");
+			calendarID = (Long) request.getSession().getAttribute("CALENDAR_ADMIN_ID");
 		}
 		if(parameterMap.get("CALENDAR_ID") != null)
 		{
@@ -197,7 +197,7 @@ public class CalendarAdminController extends HttpServlet
 		/*
 		 * Determine which screen to display
 		 */
-		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("CALENDAR_SCREEN") != null)
+		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("CALENDAR_ADMIN_SCREEN") != null)
 				&& calendarID > 0)
 		{
 			String paramScreen = null;
@@ -207,7 +207,7 @@ public class CalendarAdminController extends HttpServlet
 			}
 			else
 			{
-				paramScreen = (String) request.getSession().getAttribute("CALENDAR_SCREEN");
+				paramScreen = (String) request.getSession().getAttribute("CALENDAR_ADMIN_SCREEN");
 			}
 				
 			
@@ -215,7 +215,7 @@ public class CalendarAdminController extends HttpServlet
 			{
 				calendar = calendarDAO.getCalendar(calendarID);
 				
-				request.getSession().setAttribute("CALENDAR_ID", calendarID);
+				request.getSession().setAttribute("CALENDAR_ADMIN_ID", calendarID);
 			}
 				
 			if(paramScreen.equals("ROLES"))
@@ -251,7 +251,7 @@ public class CalendarAdminController extends HttpServlet
 				data.getCalendar().add(calendar);
 			}
 			
-			request.getSession().setAttribute("CALENDAR_SCREEN", paramScreen);
+			request.getSession().setAttribute("CALENDAR_ADMIN_SCREEN", paramScreen);
 		}
 		else
 		{
@@ -263,8 +263,8 @@ public class CalendarAdminController extends HttpServlet
 				data.getCalendar().addAll(calendars);
 			}
 			
-			request.getSession().removeAttribute("CALENDAR_ID");
-			request.getSession().setAttribute("CALENDAR_SCREEN", "LIST");
+			request.getSession().removeAttribute("CALENDAR_ADMIN_ID");
+			request.getSession().setAttribute("CALENDAR_ADMIN_SCREEN", "LIST");
 		}
 		
 		environment.setComponentId(3);
@@ -272,10 +272,10 @@ public class CalendarAdminController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("calAdminXslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.calendar", data);
-		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
+		xslScreen = getServletContext().getInitParameter("calAdminXslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		

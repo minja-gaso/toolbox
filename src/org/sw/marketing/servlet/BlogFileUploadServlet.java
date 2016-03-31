@@ -14,58 +14,66 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
-import org.sw.marketing.dao.calendar.CalendarDAO;
-import org.sw.marketing.dao.calendar.DAOFactory;
-import org.sw.marketing.dao.calendar.event.CalendarEventDAO;
-import org.sw.marketing.data.calendar.Data;
-import org.sw.marketing.data.calendar.Data.Calendar;
-import org.sw.marketing.data.calendar.Data.Calendar.Event;
-import org.sw.marketing.data.calendar.Message;
+import org.sw.marketing.dao.blog.BlogDAO;
+import org.sw.marketing.dao.blog.topic.BlogTopicDAO;
+import org.sw.marketing.dao.blog.DAOFactory;
+import org.sw.marketing.dao.blog.file.BlogTopicFileDAO;
+import org.sw.marketing.data.blog.Data;
+import org.sw.marketing.data.blog.Data.Blog;
+import org.sw.marketing.data.blog.Data.Blog.Topic;
+import org.sw.marketing.data.blog.Data.Blog.Topic.File;
+import org.sw.marketing.data.blog.Message;
 import org.sw.marketing.transformation.TransformerHelper;
 import org.sw.marketing.util.ReadFile;
 
-public class CalendarImageUploadServlet extends HttpServlet
+public class BlogFileUploadServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		String paramCalendarID = request.getParameter("CALENDAR_ID");
-		long calendarID = 0;
+		String paramBlogID = request.getParameter("BLOG_ID");
+		long blogID = 0;
 		try
 		{
-			calendarID = Long.parseLong(paramCalendarID);
+			blogID = Long.parseLong(paramBlogID);
 		}
 		catch (NumberFormatException e)
 		{
-			calendarID = 0;
+			blogID = 0;
 		}
 
-		String paramEventID = request.getParameter("EVENT_ID");
-		long eventID = 0;
+		String paramTopicID = request.getParameter("TOPIC_ID");
+		long topicID = 0;
 		try
 		{
-			eventID = Long.parseLong(paramEventID);
+			topicID = Long.parseLong(paramTopicID);
 		}
 		catch (NumberFormatException e)
 		{
-			eventID = 0;
+			topicID = 0;
 		}
 
-		CalendarDAO calendarDAO = DAOFactory.getCalendarDAO();
-		CalendarEventDAO eventDAO = DAOFactory.getCalendarEventDAO();
+		BlogDAO blogDAO = DAOFactory.getBlogDAO();
+		BlogTopicDAO topicDAO = DAOFactory.getBlogTopicDAO();
+		BlogTopicFileDAO fileDAO = DAOFactory.getBlogTopicFileDAO();
 
 		Data data = new Data();
-		Calendar calendar = calendarDAO.getCalendar(calendarID);
+		Blog blog = blogDAO.getBlog(blogID);
 
-		if (calendar != null)
+		if (blog != null)
 		{
-			Event event = eventDAO.getCalendarEvent(eventID);
-			if (event != null)
+			Topic topic = topicDAO.getBlogTopic(topicID);
+			if (topic != null)
 			{
-				calendar.getEvent().add(event);
+				java.util.List<File> files = fileDAO.getFiles(topic.getId());
+				if(files != null)
+				{
+					topic.getFile().addAll(files);
+				}
+				blog.getTopic().add(topic);
 			}
-			data.getCalendar().add(calendar);
+			data.getBlog().add(blog);
 		}
 		
 		if(request.getAttribute("message") != null)
@@ -78,10 +86,10 @@ public class CalendarImageUploadServlet extends HttpServlet
 		 * generate output
 		 */
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("calManageXslUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("blogManageXslUrl"));
 		
-		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.calendar", data);
-		String xslScreen = getServletContext().getInitParameter("calManageXslPath") + "calendar_event_image_upload_iframe.xsl";
+		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.blog", data);
+		String xslScreen = getServletContext().getInitParameter("blogManageXslPath") + "file_upload_iframe.xsl";
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 
@@ -102,7 +110,7 @@ public class CalendarImageUploadServlet extends HttpServlet
 		validFileTypes.add("image/gif");
 		validFileTypes.add("image/bmp");
 		
-		String paramCalendarID = request.getParameter("CALENDAR_ID");
+		String paramCalendarID = request.getParameter("BLOG_ID");
 		long calendarID = 0;
 		try
 		{
@@ -113,7 +121,7 @@ public class CalendarImageUploadServlet extends HttpServlet
 			calendarID = 0;
 		}
 
-		String paramEventID = request.getParameter("EVENT_ID");
+		String paramEventID = request.getParameter("TOPIC_ID");
 		long eventID = 0;
 		try
 		{
@@ -124,10 +132,12 @@ public class CalendarImageUploadServlet extends HttpServlet
 			eventID = 0;
 		}
 
-		CalendarDAO calendarDAO = DAOFactory.getCalendarDAO();
-		CalendarEventDAO eventDAO = DAOFactory.getCalendarEventDAO();
+		BlogDAO calendarDAO = DAOFactory.getBlogDAO();
+		BlogTopicDAO topicDAO = DAOFactory.getBlogTopicDAO();
 
-		Event event = eventDAO.getCalendarEvent(eventID);
+		Topic topic = topicDAO.getBlogTopic(eventID);
+		File file = new File();
+		file.setFkTopicId(topic.getId());
 		
 		try
 		{
@@ -143,10 +153,14 @@ public class CalendarImageUploadServlet extends HttpServlet
 						 */
 						String fieldName = item.getFieldName();
 						String fieldValue = item.getString();
-						
-						if(fieldName.equals("EVENT_IMAGE_DESCRIPTION"))
+
+						if(fieldName.equals("TOPIC_FILE_TYPE"))
 						{
-							event.setFileDescription(fieldValue);
+							file.setType(fieldValue);
+						}
+						if(fieldName.equals("TOPIC_FILE_DESCRIPTION"))
+						{
+							file.setDescription(fieldValue);
 						}
 					}
 					else
@@ -159,25 +173,25 @@ public class CalendarImageUploadServlet extends HttpServlet
 						String fileType = getServletContext().getMimeType(fileName);
 						if(validFileTypes.contains(fileType))
 						{
-							event.setFileName(fileName);
+							file.setName(fileName);
 							InputStream fileContent = item.getInputStream();
 							
-							String uploadPath = getServletContext().getInitParameter("calFileUploadPath");						
-							String calendarUploadPath = uploadPath + request.getParameter("CALENDAR_ID");
+							String uploadPath = getServletContext().getInitParameter("blogFileUploadPath");						
+							String calendarUploadPath = uploadPath + request.getParameter("BLOG_ID");
 							java.io.File calendarUploadPathFile = new java.io.File(calendarUploadPath);
 							if(!calendarUploadPathFile.exists())
 							{
 								calendarUploadPathFile.mkdir();
 							}
 							
-							String eventUploadPath = calendarUploadPath + java.io.File.separator + request.getParameter("EVENT_ID");
+							String eventUploadPath = calendarUploadPath + java.io.File.separator + request.getParameter("TOPIC_ID");
 							java.io.File eventUploadPathFile = new java.io.File(eventUploadPath);
 							if(!eventUploadPathFile.exists())
 							{
 								eventUploadPathFile.mkdir();
 							}
 							
-							String fileUploadPath = eventUploadPath + java.io.File.separator + event.getFileName();
+							String fileUploadPath = eventUploadPath + java.io.File.separator + file.getName();
 							java.io.File fileSave = new java.io.File(fileUploadPath);
 							try
 							{
@@ -202,7 +216,9 @@ public class CalendarImageUploadServlet extends HttpServlet
 						}
 					}
 				}
-				eventDAO.updateCalendarEvent(event);
+//				topicDAO.updateBlogTopic(topic);
+				BlogTopicFileDAO fileDAO = DAOFactory.getBlogTopicFileDAO();
+				fileDAO.insert(file);
 			}
 		}
 		catch (FileUploadException e)

@@ -1,139 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
   <display-name>toolbox</display-name>
+  <!-- 
+  	SURVEYS
+   -->
   <servlet>
     <servlet-name>Survey Controller</servlet-name>
     <servlet-class>org.sw.marketing.servlet.SurveyController</servlet-class>
-    <init-param>
-      <param-name>xslPath</param-name>
-      <param-value>C:\\development\\assets\\xsl\\toolbox\\forms\\</param-value>
-    </init-param>
-    <init-param>
-      <param-name>xslUrl</param-name>
-      <param-value>http://localhost:8080/xsl/toolbox/forms/</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>Survey Controller</servlet-name>
     <url-pattern>/survey</url-pattern>
   </servlet-mapping>
+  <!-- 
+  	SELF-ASSESSMENT SURVEYS 
+   -->
   <servlet>
     <servlet-name>Self Assessment Controller</servlet-name>
     <servlet-class>org.sw.marketing.servlet.SelfAssessmentController</servlet-class>
-    <init-param>
-      <param-name>xslPath</param-name>
-      <param-value>C:\\development\\assets\\xsl\\toolbox\\forms\\</param-value>
-    </init-param>
-    <init-param>
-      <param-name>xslUrl</param-name>
-      <param-value>http://localhost:8080/xsl/toolbox/forms/</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>Self Assessment Controller</servlet-name>
     <url-pattern>/selfassessment</url-pattern>
   </servlet-mapping>
+  <!-- 
+  	CALENDAR - ADMIN 
+   -->
   <servlet>
     <servlet-name>Calendar Admin Controller</servlet-name>
-    <servlet-class>org.sw.marketing.servlet.CalendarAdminController</servlet-class>
-    <init-param>
-      <param-name>xslPath</param-name>
-      <param-value>C:\\development\\assets\\xsl\\toolbox\\calendars\\admin\\</param-value>
-    </init-param>
-    <init-param>
-      <param-name>xslUrl</param-name>
-      <param-value>http://localhost:8080/xsl/toolbox/calendars/admin/</param-value>
-    </init-param>
+    <servlet-class>org.sw.marketing.servlet.CalendarAdminController</servlet-class>    
   </servlet>
   <servlet-mapping>
     <servlet-name>Calendar Admin Controller</servlet-name>
     <url-pattern>/calendarAdmin</url-pattern>
   </servlet-mapping>
+  <!-- 
+  	CALENDAR - UPLOAD 
+   -->
   <servlet>
     <servlet-name>Calendar Event Image Upload Servlet</servlet-name>
     <servlet-class>org.sw.marketing.servlet.CalendarImageUploadServlet</servlet-class>
-    <init-param>
-      <param-name>xslPath</param-name>
-      <param-value>C:\\development\\assets\\xsl\\toolbox\\calendars\\manage\\</param-value>
-    </init-param>
-    <init-param>
-      <param-name>xslUrl</param-name>
-      <param-value>http://localhost:8080/xsl/toolbox/calendars/manage/</param-value>
-    </init-param>
-    <init-param>
-      <param-name>uploadPath</param-name>
-      <param-value>C:\\development\\uploads\\calendar\\</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>Calendar Event Image Upload Servlet</servlet-name>
     <url-pattern>/calendarEventImageUploadServlet</url-pattern>
   </servlet-mapping>
+  <!-- 
+  	CALENDAR - CONTENT 
+   -->
   <servlet>
     <servlet-name>Calendar Content Controller</servlet-name>
     <servlet-class>org.sw.marketing.servlet.CalendarContentController</servlet-class>
-    <init-param>
-      <param-name>xslPath</param-name>
-      <param-value>C:\\development\\assets\\xsl\\toolbox\\calendars\\manage\\</param-value>
-    </init-param>
-    <init-param>
-      <param-name>xslUrl</param-name>
-      <param-value>http://localhost:8080/xsl/toolbox/calendars/manage/</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>Calendar Content Controller</servlet-name>
     <url-pattern>/calendarContent</url-pattern>
   </servlet-mapping>
+  <!-- 
+  	SKINS 
+   -->
   <servlet>
     <servlet-name>Skin Service Controller</servlet-name>
     <servlet-class>org.sw.marketing.servlet.SkinServiceController</servlet-class>
-    <init-param>
-      <param-name>xslPath</param-name>
-      <param-value>C:\\development\\assets\\xsl\\toolbox\\skins\\</param-value>
-    </init-param>
-    <init-param>
-      <param-name>xslUrl</param-name>
-      <param-value>http://localhost:8080/xsl/toolbox/skins/</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>Skin Service Controller</servlet-name>
     <url-pattern>/skinService</url-pattern>
   </servlet-mapping>
-  <!-- Blogs -->
+  <!-- 
+  	BLOG - ADMIN 
+   -->
   <servlet>
     <servlet-name>Blog Admin Controller</servlet-name>
     <servlet-class>org.sw.marketing.servlet.BlogAdminController</servlet-class>
-    <init-param>
-      <param-name>xslPath</param-name>
-      <param-value>C:\\development\\assets\\xsl\\toolbox\\blogs\\admin\\</param-value>
-    </init-param>
-    <init-param>
-      <param-name>xslUrl</param-name>
-      <param-value>http://localhost:8080/xsl/toolbox/blogs/admin/</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>Blog Admin Controller</servlet-name>
     <url-pattern>/blogAdmin</url-pattern>
   </servlet-mapping>
+  <!-- 
+  	BLOG - CONTENT 
+   -->
   <servlet>
     <servlet-name>Blog Content Controller</servlet-name>
     <servlet-class>org.sw.marketing.servlet.BlogContentController</servlet-class>
-    <init-param>
-      <param-name>xslPath</param-name>
-      <param-value>C:\\development\\assets\\xsl\\toolbox\\blogs\\manage\\</param-value>
-    </init-param>
-    <init-param>
-      <param-name>xslUrl</param-name>
-      <param-value>http://localhost:8080/xsl/toolbox/blogs/manage/</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>Blog Content Controller</servlet-name>
     <url-pattern>/blogContent</url-pattern>
   </servlet-mapping>
+  <!-- 
+  	BLOG - UPLOAD
+   -->   
+  <servlet>
+    <servlet-name>Blog File Upload Servlet</servlet-name>
+    <servlet-class>org.sw.marketing.servlet.BlogFileUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Blog File Upload Servlet</servlet-name>
+    <url-pattern>/blogFileUploadServlet</url-pattern>
+  </servlet-mapping>
+  <!-- 
+  	WELCOME FILES 
+   -->
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>

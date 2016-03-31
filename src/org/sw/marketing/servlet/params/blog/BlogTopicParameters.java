@@ -76,9 +76,13 @@ public class BlogTopicParameters
 		{
 			topic.setTitle(parameterMap.get("TOPIC_TITLE")[0]);
 		}
-		if(parameterMap.get("TOPIC_DESCRIPTION") != null)
+		if(parameterMap.get("TOPIC_SUMMARY") != null)
 		{
-			topic.setDescription(parameterMap.get("TOPIC_DESCRIPTION")[0]);
+			topic.setSummary(parameterMap.get("TOPIC_SUMMARY")[0]);
+		}
+		if(parameterMap.get("TOPIC_ARTICLE") != null)
+		{
+			topic.setArticle(parameterMap.get("TOPIC_ARTICLE")[0]);
 		}
 		
 		return topic;

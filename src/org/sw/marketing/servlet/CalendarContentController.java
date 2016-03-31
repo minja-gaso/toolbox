@@ -99,9 +99,9 @@ public class CalendarContentController extends HttpServlet
 		 * Calendar ID
 		 */
 		long calendarID = 0;
-		if(request.getSession().getAttribute("CALENDAR_ID") != null)
+		if(request.getSession().getAttribute("CALENDAR_CONTENT_ID") != null)
 		{
-			calendarID = (Long) request.getSession().getAttribute("CALENDAR_ID");
+			calendarID = (Long) request.getSession().getAttribute("CALENDAR_CONTENT_ID");
 		}
 		if(parameterMap.get("CALENDAR_ID") != null)
 		{
@@ -266,7 +266,7 @@ public class CalendarContentController extends HttpServlet
 		/*
 		 * Determine which screen to display
 		 */
-		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("CALENDAR_SCREEN") != null)
+		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("CALENDAR_CONTENT_SCREEN") != null)
 				&& calendarID > 0)
 		{
 			String paramScreen = null;
@@ -276,14 +276,14 @@ public class CalendarContentController extends HttpServlet
 			}
 			else
 			{
-				paramScreen = (String) request.getSession().getAttribute("CALENDAR_SCREEN");
+				paramScreen = (String) request.getSession().getAttribute("CALENDAR_CONTENT_SCREEN");
 			}
 			
 			if(innerScreenList.contains(paramScreen))
 			{
 				calendar = calendarDAO.getCalendar(calendarID);
 				
-				request.getSession().setAttribute("CALENDAR_ID", calendarID);
+				request.getSession().setAttribute("CALENDAR_CONTENT_ID", calendarID);
 			}
 			
 			if(event != null)
@@ -363,7 +363,7 @@ public class CalendarContentController extends HttpServlet
 				data.getCalendar().add(calendar);
 			}
 			
-			request.getSession().setAttribute("CALENDAR_SCREEN", paramScreen);
+			request.getSession().setAttribute("CALENDAR_CONTENT_SCREEN", paramScreen);
 		}
 		else
 		{
@@ -375,8 +375,8 @@ public class CalendarContentController extends HttpServlet
 				data.getCalendar().addAll(calendars);
 			}
 			
-			request.getSession().removeAttribute("CALENDAR_ID");
-			request.getSession().setAttribute("CALENDAR_SCREEN", "LIST");
+			request.getSession().removeAttribute("CALENDAR_CONTENT_ID");
+			request.getSession().setAttribute("CALENDAR_CONTENT_SCREEN", "LIST");
 		}
 		
 		/*
@@ -396,10 +396,10 @@ public class CalendarContentController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("calManageXslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.calendar", data);
-		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
+		xslScreen = getServletContext().getInitParameter("calManageXslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		

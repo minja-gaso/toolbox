@@ -82,9 +82,9 @@ public class BlogAdminController extends HttpServlet
 		 * Calendar ID
 		 */
 		long blogID = 0;
-		if(request.getSession().getAttribute("BLOG_ID") != null)
+		if(request.getSession().getAttribute("BLOG_ADMIN_ID") != null)
 		{
-			blogID = (Long) request.getSession().getAttribute("BLOG_ID");
+			blogID = (Long) request.getSession().getAttribute("BLOG_ADMIN_ID");
 		}
 		if(parameterMap.get("BLOG_ID") != null)
 		{
@@ -197,7 +197,7 @@ public class BlogAdminController extends HttpServlet
 		/*
 		 * Determine which screen to display
 		 */
-		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("BLOG_SCREEN") != null)
+		if((parameterMap.get("SCREEN") != null || request.getSession().getAttribute("BLOG_ADMIN_SCREEN") != null)
 				&& blogID > 0)
 		{
 			String paramScreen = null;
@@ -207,7 +207,7 @@ public class BlogAdminController extends HttpServlet
 			}
 			else
 			{
-				paramScreen = (String) request.getSession().getAttribute("BLOG_SCREEN");
+				paramScreen = (String) request.getSession().getAttribute("BLOG_ADMIN_SCREEN");
 			}
 				
 			
@@ -215,7 +215,7 @@ public class BlogAdminController extends HttpServlet
 			{
 				blog = blogDAO.getBlog(blogID);
 				
-				request.getSession().setAttribute("BLOG_ID", blogID);
+				request.getSession().setAttribute("BLOG_ADMIN_ID", blogID);
 			}
 				
 			if(paramScreen.equals("ROLES"))
@@ -251,7 +251,7 @@ public class BlogAdminController extends HttpServlet
 				data.getBlog().add(blog);
 			}
 			
-			request.getSession().setAttribute("BLOG_SCREEN", paramScreen);
+			request.getSession().setAttribute("BLOG_ADMIN_SCREEN", paramScreen);
 		}
 		else
 		{
@@ -263,8 +263,8 @@ public class BlogAdminController extends HttpServlet
 				data.getBlog().addAll(blogs);
 			}
 			
-			request.getSession().removeAttribute("BLOG_ID");
-			request.getSession().setAttribute("BLOG_SCREEN", "LIST");
+			request.getSession().removeAttribute("BLOG_ADMIN_ID");
+			request.getSession().setAttribute("BLOG_ADMIN_SCREEN", "LIST");
 		}
 		
 		environment.setComponentId(6);
@@ -272,10 +272,10 @@ public class BlogAdminController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-		transformerHelper.setUrlResolverBaseUrl(getServletConfig().getInitParameter("xslUrl"));
+		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("blogAdminXslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.blog", data);
-		xslScreen = getServletConfig().getInitParameter("xslPath") + xslScreen;
+		xslScreen = getServletContext().getInitParameter("blogAdminXslPath") + xslScreen;
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		
