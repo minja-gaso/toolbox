@@ -7,7 +7,8 @@
             username="postgres" password="Zaboravi90" maxActive="20" maxIdle="10"
             maxWait="-1"/>
             
-<<<<<<< HEAD
+  <Parameter name="assetPath" value="C:\\development\\assets\\" />   
+            
   <!-- Survey -->        
   <Parameter name="surveyXslPath" value="C:\\development\\assets\\xsl\\toolbox\\forms\\" />     
   <Parameter name="surveyXslUrl" value="http://localhost:8080/xsl/toolbox/forms/" />
@@ -29,40 +30,4 @@
   <Parameter name="blogManageXslPath" value="C:\\development\\assets\\xsl\\toolbox\\blogs\\manage\\" />     
   <Parameter name="blogManageXslUrl" value="http://localhost:8080/xsl/toolbox/blogs/manage/" />
   <Parameter name="blogFileUploadPath" value="C:\\development\\uploads\\blog\\" />
-  
-            
-            
-  <!-- <Parameter name="assetPath" value="E:\\assets\\" />-->
-=======
-  <!-- basic -->
->>>>>>> origin/master
-  <Parameter name="assetPath" value="C:\\development\\assets\\" />
-  <Parameter name="xslPath" value="C:\\development\\assets\\xsl\\toolbox\\" />
-  <Parameter name="xslUrl" value="http://localhost:8080/xsl/toolbox/" />
-  <Parameter name="uploadPath" value="C:\\development\\uploads\\" />
-  
-  <!-- calendar -->
-  <Parameter name="calAdminXslPath" value="C:\\development\\assets\\xsl\\toolbox\\calendars\\admin\\" />
-  <Parameter name="calAdminXslUrl" value="http://localhost:8080/xsl/toolbox/calendars/admin/" />
-  <Parameter name="calManageXslPath" value="C:\\development\\assets\\xsl\\toolbox\\calendars\\manage\\" />
-  <Parameter name="calManageXslUrl" value="http://localhost:8080/xsl/toolbox/calendars/manage/" />
-  <Parameter name="calUploadPath" value="C:\\development\\uploads\\calendar\\" />
-  
-  <!-- form -->
-  <Parameter name="formXslPath" value="C:\\development\\assets\\xsl\\toolbox\\forms\\" />
-  <Parameter name="formXslUrl" value="http://localhost:8080/xsl/toolbox/forms/" />
-  
-  <!-- skin -->
-  <Parameter name="skinXslPath" value="C:\\development\\assets\\xsl\\toolbox\\skins\\" />
-  <Parameter name="skinXslUrl" value="http://localhost:8080/xsl/toolbox/skins/" />
-
-  <!-- <Parameter name="assetPath" value="E:\\assets\\" />
-  <Parameter name="assetXslFormsPath" value="C:\\development\\assets\\xsl\\toolbox\\forms\\" />
-  <Parameter name="assetXslFormsUrl" value="http://localhost:8080/xsl/toolbox/forms/" />
-  <Parameter name="assetXslCalendarsPath" value="C:\\development\\assets\\xsl\\toolbox\\calendars\\admin\\" />
-  <Parameter name="assetXslCalendarsUrl" value="http://localhost:8080/xsl/toolbox/calendars/admin/" />
-   
-  <Parameter name="assetXslCalendarsContentPath" value="C:\\development\\assets\\xsl\\toolbox\\calendars\\manage\\" />
-  <Parameter name="assetXslCalendarsContentUrl" value="http://localhost:8080/xsl/toolbox/calendars/manage/" />
--->
 </Context>

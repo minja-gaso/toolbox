@@ -2,17 +2,12 @@ package org.sw.marketing.servlet;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.util.GregorianCalendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.sw.marketing.dao.blog.BlogDAO;
 import org.sw.marketing.dao.blog.topic.BlogTopicDAO;
@@ -30,9 +25,7 @@ import org.sw.marketing.data.blog.Message;
 import org.sw.marketing.data.blog.User;
 import org.sw.marketing.servlet.params.blog.BlogTopicParameters;
 import org.sw.marketing.transformation.TransformerHelper;
-import org.sw.marketing.util.DateToXmlGregorianCalendar;
 import org.sw.marketing.util.ReadFile;
-import org.sw.marketing.util.Recursion;
 
 public class BlogContentController extends HttpServlet
 {

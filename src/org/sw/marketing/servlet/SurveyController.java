@@ -439,14 +439,6 @@ public class SurveyController extends HttpServlet
 				request.getSession().setAttribute("FORM_ID", formID);
 			}
 				
-//			if(paramScreen.equals("GENERAL"))
-//			{
-//				xslScreen = "form_general.xsl";
-//			}
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 			if(paramScreen.equals("APPEARANCE"))
 			{
 				FormSkinDAO skinDAO = DAOFactory.getFormSkinDAO();
@@ -583,17 +575,11 @@ public class SurveyController extends HttpServlet
 		data.setEnvironment(environment);
 		
 		TransformerHelper transformerHelper = new TransformerHelper();
-<<<<<<< HEAD
 		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("surveyXslUrl"));
 		
 		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.form", data);
 		xslScreen = getServletContext().getInitParameter("surveyXslPath") + xslScreen;
-=======
-		transformerHelper.setUrlResolverBaseUrl(getServletContext().getInitParameter("formXslUrl"));
-		
-		String xmlStr = transformerHelper.getXmlStr("org.sw.marketing.data.form", data);
-		xslScreen = getServletContext().getInitParameter("formXslPath") + xslScreen;
->>>>>>> origin/master
+
 		String xslStr = ReadFile.getSkin(xslScreen);
 		String htmlStr = transformerHelper.getHtmlStr(xmlStr, new ByteArrayInputStream(xslStr.getBytes()));
 		
