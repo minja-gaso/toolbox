@@ -150,7 +150,7 @@ public class BlogAdminController extends HttpServlet
 						data.getMessage().add(message);
 					}
 				}
-				else if(paramAction.equals("DELETE_CALENDAR"))
+				else if(paramAction.equals("DELETE_BLOG"))
 				{
 					blogDAO.deleteBlog(blog.getId());
 					
