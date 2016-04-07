@@ -9,25 +9,50 @@
             
   <Parameter name="assetPath" value="C:\\development\\assets\\" />   
             
-  <!-- Survey -->        
+  <!-- 
+  Survey         
   <Parameter name="surveyXslPath" value="C:\\development\\assets\\xsl\\toolbox\\forms\\" />     
   <Parameter name="surveyXslUrl" value="http://localhost:8080/xsl/toolbox/forms/" />
   
-  <!-- Calendar -->        
+  Calendar         
   <Parameter name="calAdminXslPath" value="C:\\development\\assets\\xsl\\toolbox\\calendars\\admin\\" />     
   <Parameter name="calAdminXslUrl" value="http://localhost:8080/xsl/toolbox/calendars/admin/" />
   <Parameter name="calManageXslPath" value="C:\\development\\assets\\xsl\\toolbox\\calendars\\manage\\" />     
   <Parameter name="calManageXslUrl" value="http://localhost:8080/xsl/toolbox/calendars/manage/" />
   <Parameter name="calFileUploadPath" value="C:\\development\\uploads\\calendar\\" />
   
-  <!-- Skin -->        
+  Skin    
   <Parameter name="skinXslPath" value="C:\\development\\assets\\xsl\\toolbox\\skins\\" />     
   <Parameter name="skinXslUrl" value="http://localhost:8080/xsl/toolbox/skins/" />
   
-  <!-- Blog -->        
+  Blog        
   <Parameter name="blogAdminXslPath" value="C:\\development\\assets\\xsl\\toolbox\\blogs\\admin\\" />     
   <Parameter name="blogAdminXslUrl" value="http://localhost:8080/xsl/toolbox/blogs/admin/" />
   <Parameter name="blogManageXslPath" value="C:\\development\\assets\\xsl\\toolbox\\blogs\\manage\\" />     
   <Parameter name="blogManageXslUrl" value="http://localhost:8080/xsl/toolbox/blogs/manage/" />
   <Parameter name="blogFileUploadPath" value="C:\\development\\uploads\\blog\\" />
+  -->
+  
+  <!-- Survey -->        
+  <Parameter name="surveyXslPath" value="/var/lib/assets/xsl/toolbox/forms/" />     
+  <Parameter name="surveyXslUrl" value="http://localhost:8080/xsl/toolbox/forms/" />
+  
+  <!-- Calendar -->        
+  <Parameter name="calAdminXslPath" value="/var/lib/assets/xsl/toolbox/calendars/admin/" />     
+  <Parameter name="calAdminXslUrl" value="http://localhost:8080/xsl/toolbox/calendars/admin/" />
+  <Parameter name="calManageXslPath" value="/var/lib/assets/xsl/toolbox/calendars/manage/" />     
+  <Parameter name="calManageXslUrl" value="http://localhost:8080/xsl/toolbox/calendars/manage/" />
+  <Parameter name="calFileUploadPath" value="/var/lib/uploads/calendar/" />
+  
+  <!-- Skin -->        
+  <Parameter name="skinXslPath" value="/var/lib/assets/xsl/toolbox/skins/" />     
+  <Parameter name="skinXslUrl" value="http://localhost:8080/xsl/toolbox/skins/" />
+  
+  <!-- Blog -->        
+  <Parameter name="blogAdminXslPath" value="/var/lib/assets/xsl/toolbox/blogs/admin/" />     
+  <Parameter name="blogAdminXslUrl" value="http://localhost:8080/xsl/toolbox/blogs/admin/" />
+  <Parameter name="blogManageXslPath" value="/var/lib/assets/xsl/toolbox/blogs/manage/" />     
+  <Parameter name="blogManageXslUrl" value="http://localhost:8080/xsl/toolbox/blogs/manage/" />
+  <Parameter name="blogFileUploadPath" value="/var/lib/uploads/blog/" />
+  
 </Context>
