@@ -44,6 +44,7 @@ public class SelfAssessmentController extends HttpServlet
 	public void init()
 	{
 		innerScreenList.add("GENERAL");
+		innerScreenList.add("APPEARANCE");
 		innerScreenList.add("QUESTIONS_AND_ANSWERS");
 		innerScreenList.add("ANSWERS");
 		innerScreenList.add("SCORES");
@@ -460,7 +461,19 @@ public class SelfAssessmentController extends HttpServlet
 				request.getSession().setAttribute("FORM_ID", formID);
 			}
 				
-			if(paramScreen.equals("QUESTIONS_AND_ANSWERS"))
+
+			if(paramScreen.equals("APPEARANCE"))
+			{
+				FormSkinDAO skinDAO = DAOFactory.getFormSkinDAO();
+				java.util.List<Skin> skins = skinDAO.getSkins(user);
+				if(skins != null)
+				{
+					data.getSkin().addAll(skins);
+				}
+				
+				xslScreen = "form_appearance.xsl";
+			}
+			else if(paramScreen.equals("QUESTIONS_AND_ANSWERS"))
 			{
 				xslScreen = "question_and_answer_list.xsl";
 			}			
